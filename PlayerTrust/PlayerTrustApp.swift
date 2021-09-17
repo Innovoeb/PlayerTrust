@@ -11,16 +11,17 @@ import Firebase
 @main
 struct PlayerTrustApp: App
 {
-    
     init()
     {
         FirebaseApp.configure()
+        
     }
     
     var body: some Scene
     {
         WindowGroup {
             RootView()
+                .environmentObject(User())
         }
     }
 }

@@ -6,36 +6,55 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct RootView: View
 {
-    var body: some View
+    @EnvironmentObject var user: User
+    
+    init()
     {
         
-        TabView
+    }
+    
+    var body: some View
+    {
+        if (user.userLoggedIn == false)
         {
-            Home()
-                .tabItem
-                {
-                    VStack
+            TabView
+            {
+                Home().environmentObject(User())
+                    .tabItem
                     {
-                        Image(systemName: "house.fill")
-                        Text("Home")
+                        VStack
+                        {
+                            Image(systemName: "house.fill")
+                            Text("Home")
+                        }
                     }
-                }
-            
-            Login_Signup_V()
-                .tabItem
-                {
-                    VStack
+                
+                LoginSignupForm().environmentObject(User())
+                    .tabItem
                     {
-                        Image(systemName: "square.and.pencil")
-                        Text("Sign In")
+                        VStack
+                        {
+                            Image(systemName: "square.and.pencil")
+                            Text("Login")
+                        }
                     }
-                }
 
+            }
+            .onAppear()
+            {
+                print("is a user logged in?: \(user.userLoggedIn)")
+                user.userLoggedIn = Auth.auth().currentUser == nil ? false : true // check if a user is logged in
+            }
+            .environmentObject(User())
         }
-        
+        else
+        {
+            AccountHome()
+        }
     }
 }
 
