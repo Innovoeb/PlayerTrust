@@ -13,10 +13,10 @@ struct AccountHome: View
     @EnvironmentObject var user: User
     
     
-    init()
-    {
-        //user.getUser()
-    }
+    
+    let window = UIApplication.shared.windows.first
+    
+    
     
     var body: some View
     {
@@ -29,9 +29,15 @@ struct AccountHome: View
             VStack (spacing: 20)
             {
                 Text("PlayerAuth™")
-                    .onTapGesture {
-                        // send to PlayerAuth onboarding view
+                    .onTapGesture
+                    {
+                        window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
+                        window?.makeKeyAndVisible()
                     }
+                if (user.contactID != "")
+                {
+                    Text(user.accountStatus) 
+                }
                 Divider()
                 VStack
                 {
@@ -40,8 +46,12 @@ struct AccountHome: View
                 }
                 .onTapGesture
                 {
-                    print("wallet image was tapped")
+                    
                 }
+            }
+            .onAppear()
+            {
+                user.getKYPStatus()
             }
             
             
@@ -56,10 +66,15 @@ struct AccountHome: View
         }
     }
     
+    func getContact()
+    {
+        
+    }
+    
 }
 
-struct AccountHome_V_Previews: PreviewProvider {
-    static var previews: some View {
-        AccountHome().environmentObject(User())
-    }
-}
+//struct AccountHome_V_Previews: PreviewProvider {
+//    static var previews: some View {
+//        AccountHome().environmentObject(User())
+//    }
+//}

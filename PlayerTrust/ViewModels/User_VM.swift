@@ -12,15 +12,22 @@ import FirebaseFirestoreSwift
 
 class User: ObservableObject
 {
+    
     //@Published var usermodel = [UserModel]()
     
     @Published var userID = ""
     @Published var userUsername = ""
     @Published var userLoggedIn:Bool
+    @Published var accountStatus = ""
+    @Published var contactID = ""
+    @Published var accountID = ""
+    
+    //@Published var createAccountResponse = [CreateAccountResponse]()
     
     init()
     {
         userLoggedIn = Auth.auth().currentUser == nil ? false : true // check if a user is logged in
+        
     }
     
     // send username and email to firebase
@@ -50,13 +57,22 @@ class User: ObservableObject
                 let data = docSnapshot.data()
                 self.userUsername = data!["username"] as! String
                 self.userID = data!["userID"] as! String
-
+                
                 //try! docSnapshot.data(as: UserModel.self)
+                //print(self.usermodel)
             }
             else
             {
                 print("Error: No Data Returned")
             }
         }
+    }
+    
+    
+    // check account based on contact ID and grab the account's KYC status
+    func getKYPStatus()
+    {
+        
+        
     }
 }

@@ -22,6 +22,7 @@ struct PlayerTrustApp: App
         WindowGroup {
             RootView()
                 .environmentObject(User())
+                .environmentObject(PrimeTrust())
         }
     }
 }

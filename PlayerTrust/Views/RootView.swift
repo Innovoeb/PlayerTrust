@@ -23,7 +23,7 @@ struct RootView: View
         {
             TabView
             {
-                Home().environmentObject(User())
+                Home().environmentObject(User()).environmentObject(PrimeTrust())
                     .tabItem
                     {
                         VStack
@@ -33,7 +33,7 @@ struct RootView: View
                         }
                     }
                 
-                LoginSignupForm().environmentObject(User())
+                LoginSignupForm().environmentObject(User()).environmentObject(PrimeTrust())
                     .tabItem
                     {
                         VStack
@@ -53,7 +53,7 @@ struct RootView: View
         }
         else
         {
-            AccountHome()
+            AccountHome().environmentObject(PrimeTrust())
         }
     }
 }
