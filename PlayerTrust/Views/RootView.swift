@@ -46,7 +46,7 @@ struct RootView: View
         }
         else
         {
-            AccountHome().environmentObject(PrimeTrust())
+            AccountHome()
         }
     }
 }

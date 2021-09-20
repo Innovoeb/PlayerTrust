@@ -109,8 +109,7 @@ struct PlayerAuthForm: View
             
             guard let data = data, error == nil else
             {
-            //print(String(describing: error))
-            //semaphore.signal()
+            print(String(describing: error))
             return
             }
             do
@@ -118,8 +117,9 @@ struct PlayerAuthForm: View
                 print(String(data: data, encoding: .utf8)!)
                 print("response: \(response!)")
                 let respData = try JSONDecoder().decode(CreateAccountResponse.self, from: data)
-                print("KYP status: \(respData.data.attributes.status)")
                 user.accountStatus = respData.data.attributes.status
+                
+                // MARK: TODO, grab accountID and contactID from response and send to firestore
             }
             catch
             {

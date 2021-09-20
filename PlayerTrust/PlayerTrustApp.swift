@@ -11,10 +11,10 @@ import Firebase
 @main
 struct PlayerTrustApp: App
 {
+    
     init()
     {
         FirebaseApp.configure()
-        
     }
     
     var body: some Scene
@@ -22,7 +22,6 @@ struct PlayerTrustApp: App
         WindowGroup {
             RootView()
                 .environmentObject(User())
-                .environmentObject(PrimeTrust())
         }
     }
 }

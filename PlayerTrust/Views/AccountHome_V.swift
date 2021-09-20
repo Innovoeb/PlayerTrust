@@ -11,7 +11,6 @@ import FirebaseAuth
 struct AccountHome: View
 {
     @EnvironmentObject var user: User
-    @EnvironmentObject var primetrust: PrimeTrust
     
     let window = UIApplication.shared.windows.first
     
@@ -41,6 +40,7 @@ struct AccountHome: View
                             window?.makeKeyAndVisible()
                         }
                     }
+                Text(user.accountStatus)
                 Divider()
                 VStack
                 {
@@ -49,15 +49,10 @@ struct AccountHome: View
                 }
                 .onTapGesture
                 {
-                    window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(PrimeTrust()))
+                    window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet())
                     window?.makeKeyAndVisible()
                 }
             }
-            .onAppear()
-            {
-                user.getKYPStatus()
-            }
-            
             
             Spacer()
             LogoutButton()
@@ -69,12 +64,7 @@ struct AccountHome: View
             user.getCurrentUserDocument()
         }
     }
-    
-    func getContact()
-    {
-        
-    }
-    
+
 }
 
 //struct AccountHome_V_Previews: PreviewProvider {

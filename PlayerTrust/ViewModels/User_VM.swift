@@ -22,6 +22,7 @@ class User: ObservableObject
     init()
     {
         userLoggedIn = Auth.auth().currentUser == nil ? false : true // check if a user is logged in
+        
     }
     
     // MARK: Get User Document From Firestore
@@ -43,20 +44,22 @@ class User: ObservableObject
             }
             else if let docSnapshot = docSnapshot
             {
-                print(docSnapshot.data() ?? "") // should return username
+                //print(docSnapshot.data() ?? "")
                 
                 let data = docSnapshot.data()
                 self.userUsername = data!["username"] as! String
                 self.userID = data!["userID"] as! String
                 self.contactID = data!["contactID"] as! String
+                self.accountID = data!["accountID"] as! String
+                print("Get User Document - accountID: \(self.accountID)")
                 
-                if (self.contactID == "")
+                if (self.accountID != "")
                 {
-                    print("No ContactID Found")
+                    self.getKYPStatus()
                 }
                 else
                 {
-                    print("User Has a ContactID")
+                    print("Did Not Grab AccountID")
                 }
             }
             else
@@ -66,15 +69,44 @@ class User: ObservableObject
         }
     }
     
-    
-    // check account based on contact ID and grab the account's KYC status
+    // MARK: Grab the Associated PT Account's Status
     func getKYPStatus()
     {
-        // grab user document from firestore
-        
-        // if document has empty value for contactID, then change account status prop value
-        
-        // if document does have a contactID, make a call to the PT API and grab the account status
-        
+        // use the accountID to make a GET to PT API and return the associated account's status
+        var request = URLRequest(url: URL(string: "https://sandbox.primetrust.com/v2/accounts/\(self.accountID)")!)
+            
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+            
+        request.httpMethod = "GET"
+            
+        let task = URLSession.shared.dataTask(with: request)
+        {  (data, response, error) in
+            
+            guard let data = data, error == nil else
+            {
+            print(String(describing: error))
+            return
+            }
+            do
+            {
+                print(String(data: data, encoding: .utf8)!)
+                print("response: \(response!)")
+                print("GetKYC - accountID: \(self.accountID)")
+                let respData = try JSONDecoder().decode(AccountModel.self, from: data)
+                
+                DispatchQueue.main.async
+                {
+                    self.accountStatus = respData.accountData.attributes.status
+                }
+            }
+            catch
+            {
+                print(error)
+            }
+        }
+        task.resume()
     }
+    
+    
+    
 }
