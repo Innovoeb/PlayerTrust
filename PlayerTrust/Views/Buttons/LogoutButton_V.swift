@@ -8,7 +8,7 @@
 import SwiftUI
 import FirebaseAuth
 
-struct LoginLogoutButton: View
+struct LogoutButton: View
 {
     let window = UIApplication.shared.windows.first
     @EnvironmentObject var user: User
@@ -25,15 +25,6 @@ struct LoginLogoutButton: View
                     // run method that logs user out of account
                     print("logging out of account...")
                     logout()
-                    
-                }
-            }
-            else
-            {
-                Button("Login")
-                {
-                    window?.rootViewController = UIHostingController(rootView: LoginSignupForm().environmentObject(User()))
-                    window?.makeKeyAndVisible()
                 }
             }
         }
@@ -41,8 +32,6 @@ struct LoginLogoutButton: View
     
     func logout()
     {
-        
-        
         DispatchQueue.main.async
         {
             try! Auth.auth().signOut()
@@ -68,6 +57,6 @@ struct LoginLogoutButton: View
 
 struct Login_Logout_V_Previews: PreviewProvider {
     static var previews: some View {
-        LoginLogoutButton()
+        LogoutButton()
     }
 }

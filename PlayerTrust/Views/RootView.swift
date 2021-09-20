@@ -12,18 +12,13 @@ struct RootView: View
 {
     @EnvironmentObject var user: User
     
-    init()
-    {
-        
-    }
-    
     var body: some View
     {
         if (user.userLoggedIn == false)
         {
             TabView
             {
-                Home().environmentObject(User()).environmentObject(PrimeTrust())
+                Home()
                     .tabItem
                     {
                         VStack
@@ -33,7 +28,7 @@ struct RootView: View
                         }
                     }
                 
-                LoginSignupForm().environmentObject(User()).environmentObject(PrimeTrust())
+                LoginSignupForm().environmentObject(User())
                     .tabItem
                     {
                         VStack
@@ -47,9 +42,7 @@ struct RootView: View
             .onAppear()
             {
                 print("is a user logged in?: \(user.userLoggedIn)")
-                user.userLoggedIn = Auth.auth().currentUser == nil ? false : true // check if a user is logged in
             }
-            .environmentObject(User())
         }
         else
         {

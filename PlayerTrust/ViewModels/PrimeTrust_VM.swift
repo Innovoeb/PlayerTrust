@@ -19,6 +19,8 @@ class PrimeTrust: ObservableObject
     @Published var city = ""
     @Published var state = ""
     
+    @Published var foobar = "This is from the PT viewmodel"
+    
     init()
     {
         

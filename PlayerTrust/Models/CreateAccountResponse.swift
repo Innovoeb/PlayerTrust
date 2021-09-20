@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class CreateAccountResponse: Codable, ObservableObject
+struct CreateAccountResponse: Codable
 {
     let data: ResponseData
     //let included: [Included]

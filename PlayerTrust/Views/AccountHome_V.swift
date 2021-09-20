@@ -11,15 +11,14 @@ import FirebaseAuth
 struct AccountHome: View
 {
     @EnvironmentObject var user: User
-    
-    
+    @EnvironmentObject var primetrust: PrimeTrust
     
     let window = UIApplication.shared.windows.first
     
     
-    
     var body: some View
     {
+        
         VStack
         {
             Spacer()
@@ -31,13 +30,17 @@ struct AccountHome: View
                 Text("PlayerAuth™")
                     .onTapGesture
                     {
-                        window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
-                        window?.makeKeyAndVisible()
+                        if (user.contactID == "")
+                        {
+                            window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
+                            window?.makeKeyAndVisible()
+                        }
+                        else
+                        {
+                            window?.rootViewController = UIHostingController(rootView: PlayerAuthDetail().environmentObject(User()))
+                            window?.makeKeyAndVisible()
+                        }
                     }
-                if (user.contactID != "")
-                {
-                    Text(user.accountStatus) 
-                }
                 Divider()
                 VStack
                 {
@@ -46,7 +49,8 @@ struct AccountHome: View
                 }
                 .onTapGesture
                 {
-                    
+                    window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(PrimeTrust()))
+                    window?.makeKeyAndVisible()
                 }
             }
             .onAppear()
@@ -56,13 +60,13 @@ struct AccountHome: View
             
             
             Spacer()
-            LoginLogoutButton()
+            LogoutButton()
             Spacer()
         }
         .onAppear()
         {
             print("is a user logged in?: \(user.userLoggedIn)")
-            user.getUser()
+            user.getCurrentUserDocument()
         }
     }
     

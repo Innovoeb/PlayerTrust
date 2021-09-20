@@ -82,6 +82,7 @@ struct LoginSignupForm: View
     }
     
     
+    // MARK: Possibly Move these 3 functions into a viewmodel?
     func createAccount()
     {
         Auth.auth().createUser(withEmail: signUpEmail, password: signUpPassword)

@@ -12,9 +12,6 @@ import FirebaseFirestoreSwift
 
 class User: ObservableObject
 {
-    
-    //@Published var usermodel = [UserModel]()
-    
     @Published var userID = ""
     @Published var userUsername = ""
     @Published var userLoggedIn:Bool
@@ -22,19 +19,13 @@ class User: ObservableObject
     @Published var contactID = ""
     @Published var accountID = ""
     
-    //@Published var createAccountResponse = [CreateAccountResponse]()
-    
     init()
     {
         userLoggedIn = Auth.auth().currentUser == nil ? false : true // check if a user is logged in
-        
     }
     
-    // send username and email to firebase
-    
-    
-    
-    func getUser()
+    // MARK: Get User Document From Firestore
+    func getCurrentUserDocument()
     {
         let db = Firestore.firestore()
         let users = db.collection("users")
@@ -57,9 +48,16 @@ class User: ObservableObject
                 let data = docSnapshot.data()
                 self.userUsername = data!["username"] as! String
                 self.userID = data!["userID"] as! String
+                self.contactID = data!["contactID"] as! String
                 
-                //try! docSnapshot.data(as: UserModel.self)
-                //print(self.usermodel)
+                if (self.contactID == "")
+                {
+                    print("No ContactID Found")
+                }
+                else
+                {
+                    print("User Has a ContactID")
+                }
             }
             else
             {
@@ -72,7 +70,11 @@ class User: ObservableObject
     // check account based on contact ID and grab the account's KYC status
     func getKYPStatus()
     {
+        // grab user document from firestore
         
+        // if document has empty value for contactID, then change account status prop value
+        
+        // if document does have a contactID, make a call to the PT API and grab the account status
         
     }
 }

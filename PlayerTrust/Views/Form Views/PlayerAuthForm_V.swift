@@ -119,7 +119,7 @@ struct PlayerAuthForm: View
                 print("response: \(response!)")
                 let respData = try JSONDecoder().decode(CreateAccountResponse.self, from: data)
                 print("KYP status: \(respData.data.attributes.status)")
-                user.userAccountStatus = respData.data.attributes.status
+                user.accountStatus = respData.data.attributes.status
             }
             catch
             {
