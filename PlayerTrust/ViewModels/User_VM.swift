@@ -19,13 +19,23 @@ class User: ObservableObject
     @Published var contactID = ""
     @Published var accountID = ""
     
+    // PlayerAuth Detail View
+    @Published var name = ""
+    @Published var DOB = ""
+    @Published var SSN = ""
+    
+    @Published var city = ""
+    @Published var state = ""
+    @Published var postalCode = ""
+    @Published var street1 = ""
+    @Published var street2 = ""
+    
     init()
     {
         userLoggedIn = Auth.auth().currentUser == nil ? false : true // check if a user is logged in
-        
     }
     
-    // MARK: Get User Document From Firestore
+    // MARK: Get Firestore Document Related to Current User
     func getCurrentUserDocument()
     {
         let db = Firestore.firestore()
@@ -47,19 +57,24 @@ class User: ObservableObject
                 //print(docSnapshot.data() ?? "")
                 
                 let data = docSnapshot.data()
-                self.userUsername = data!["username"] as! String
-                self.userID = data!["userID"] as! String
-                self.contactID = data!["contactID"] as! String
-                self.accountID = data!["accountID"] as! String
-                print("Get User Document - accountID: \(self.accountID)")
-                
-                if (self.accountID != "")
+                DispatchQueue.main.async
                 {
-                    self.getKYPStatus()
-                }
-                else
-                {
-                    print("Did Not Grab AccountID")
+                    self.userUsername = data!["username"] as! String
+                    self.userID = data!["userID"] as! String
+                    if (data!["accountID"] != nil)
+                    {
+                        self.contactID = data!["contactID"] as! String
+                        self.accountID = data!["accountID"] as! String
+                        
+                        if (self.accountID != "")
+                        {
+                            self.getKYPStatus()
+                        }
+                        else
+                        {
+                            print("Did Not Grab AccountID")
+                        }
+                    }
                 }
             }
             else
@@ -76,7 +91,6 @@ class User: ObservableObject
         var request = URLRequest(url: URL(string: "https://sandbox.primetrust.com/v2/accounts/\(self.accountID)")!)
             
         request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
-            
         request.httpMethod = "GET"
             
         let task = URLSession.shared.dataTask(with: request)
@@ -89,9 +103,9 @@ class User: ObservableObject
             }
             do
             {
-                print(String(data: data, encoding: .utf8)!)
-                print("response: \(response!)")
-                print("GetKYC - accountID: \(self.accountID)")
+                //print(String(data: data, encoding: .utf8)!)
+                //print("Response: \(response!)")
+                //print("GetKYC - accountID: \(self.accountID)")
                 let respData = try JSONDecoder().decode(AccountModel.self, from: data)
                 
                 DispatchQueue.main.async
@@ -107,6 +121,66 @@ class User: ObservableObject
         task.resume()
     }
     
-    
-    
+    // MARK: Grab the Associated PT Contact's Info
+    func getContact()
+    {
+        
+        // grab the contactID from firebase first to pass into URL
+        let db = Firestore.firestore()
+        let users = db.collection("users")
+        let document = users.document(Auth.auth().currentUser?.uid ?? "")
+        document.getDocument { docSnapshot, error in
+            
+            if let error = error
+            {
+                print(error.localizedDescription)
+            }
+            // perform PT API call after grabbing contactID from firestore
+            else if let docSnapshot = docSnapshot
+            {
+                let data = docSnapshot.data()
+                
+                self.contactID = data!["contactID"] as! String
+                
+                var request = URLRequest(url: URL(string: "https://sandbox.primetrust.com/v2/contacts/\(self.contactID)?include=addresses")!)
+                
+                request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+                request.httpMethod = "GET"
+                
+                let task = URLSession.shared.dataTask(with: request)
+                {  (data, response, error) in
+                    
+                    guard let data = data, error == nil else
+                    {
+                    print(String(describing: error))
+                    return
+                    }
+                    do
+                    {
+                        //print("Response: \(response!)")
+                        let respData = try JSONDecoder().decode(ContactModel.self, from: data)
+                        
+                        DispatchQueue.main.async
+                        {
+                            self.name = respData.data.attributes.name
+                            self.DOB = respData.data.attributes.DOB
+                            self.SSN = respData.data.attributes.SSN
+                            
+                            self.city = respData.included[0].attributes.city
+                            self.state = respData.included[0].attributes.region
+                            self.postalCode = respData.included[0].attributes.postalCode
+                            self.street1 = respData.included[0].attributes.street1
+                            self.street2 = respData.included[0].attributes.street2
+                        }
+                       
+                    }
+                    catch
+                    {
+                        print(error)
+                    }
+                }
+                task.resume()
+            }
+        }
+    }
 }

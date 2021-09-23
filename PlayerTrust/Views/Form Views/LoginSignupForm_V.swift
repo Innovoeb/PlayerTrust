@@ -118,23 +118,19 @@ struct LoginSignupForm: View
             let db = Firestore.firestore()
             let path = db.collection("users").document(currentUser.uid)
             
-            path.setData(["username" : cleansedUsername, "userID": currentUser.uid, "email" : currentUser.email ?? ""])
+            path.setData(["username" : cleansedUsername, "userID": currentUser.uid, "email" : currentUser.email ?? "", "contactID" : "", "accountID" : ""])
             {
                 error in
                 
                 if error == nil
                 {
-                    print("Success!")
-                    print("Data Was Sent To Firestore")
+                    print("Success! New User Was Added to Firestore")
                 }
                 else
                 {
                     print(error?.localizedDescription ?? "")
                 }
             }
-            
-            //User.userUsername = username
-            //User.userID = currentUser.uid
         }
     }
     

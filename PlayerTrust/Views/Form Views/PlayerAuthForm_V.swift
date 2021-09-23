@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseFirestore
 
 struct PlayerAuthForm: View
 {
@@ -114,12 +116,18 @@ struct PlayerAuthForm: View
             }
             do
             {
-                print(String(data: data, encoding: .utf8)!)
-                print("response: \(response!)")
+                //print(String(data: data, encoding: .utf8)!)
+                print("Response: \(response!)")
                 let respData = try JSONDecoder().decode(CreateAccountResponse.self, from: data)
-                user.accountStatus = respData.data.attributes.status
+                user.accountStatus = respData.data.attributes.status // grab account status
+                user.accountID = respData.data.id // grab the account's ID
+                user.contactID = respData.data.relationships.contacts.data[0].id // grab the contact's ID
                 
-                // MARK: TODO, grab accountID and contactID from response and send to firestore
+                // update user document in firestore with newly created account and contact ID from PT
+                let db = Firestore.firestore()
+                let users = db.collection("users").document(Auth.auth().currentUser?.uid ?? "")
+                
+                users.updateData(["contactID": user.contactID, "accountID": user.accountID])
             }
             catch
             {

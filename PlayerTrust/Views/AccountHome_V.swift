@@ -26,21 +26,24 @@ struct AccountHome: View
     
             VStack (spacing: 20)
             {
-                Text("PlayerAuth™")
-                    .onTapGesture
-                    {
-                        if (user.contactID == "")
+                VStack (spacing: 5)
+                {
+                    Text("PlayerAuth™")
+                        .onTapGesture
                         {
-                            window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
-                            window?.makeKeyAndVisible()
+                            if (user.contactID == "")
+                            {
+                                window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
+                                window?.makeKeyAndVisible()
+                            }
+                            else
+                            {
+                                window?.rootViewController = UIHostingController(rootView: PlayerAuthDetail().environmentObject(User()))
+                                window?.makeKeyAndVisible()
+                            }
                         }
-                        else
-                        {
-                            window?.rootViewController = UIHostingController(rootView: PlayerAuthDetail().environmentObject(User()))
-                            window?.makeKeyAndVisible()
-                        }
-                    }
-                Text(user.accountStatus)
+                    Text("(\(user.accountStatus))")
+                }
                 Divider()
                 VStack
                 {

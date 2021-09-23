@@ -10,12 +10,13 @@ import SwiftUI
 struct CreateAccountResponse: Codable
 {
     let data: ResponseData
-    //let included: [Included]
 }
 
 struct ResponseData: Codable
 {
+    let id: String
     let attributes: ResponseAttributes
+    let relationships: Relationships
 }
 
 struct ResponseAttributes: Codable
@@ -24,21 +25,18 @@ struct ResponseAttributes: Codable
     let status: String
 }
 
-//struct Included: Codable
-//{
-//    let type: String
-//    let id: String
-//    let attributes: ContactResponseAttributes
-//}
-//
-//struct ContactResponseAttributes: Codable
-//{
-//    let amlCleared: String
-//    let cipCleared: String
-//
-//    enum CodingKeys: String, CodingKey
-//    {
-//        case amlCleared = "aml-cleared"
-//        case cipCleared = "cip-cleared"
-//    }
-//}
+struct Relationships: Codable
+{
+    let contacts: Contacts
+    
+}
+
+struct Contacts: Codable
+{
+    let data: [ContactsData]
+}
+
+struct ContactsData: Codable
+{
+    let id: String
+}

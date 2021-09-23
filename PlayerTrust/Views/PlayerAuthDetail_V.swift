@@ -9,15 +9,27 @@ import SwiftUI
 
 struct PlayerAuthDetail: View
 {
-    //@State private var selection = 1
-    
+    @EnvironmentObject var user: User
     
     var body: some View
     {
-        VStack
+        VStack (alignment: .center, spacing: 10)
         {
-            Text("This is the PlayerAuth detail view")
+            Text(user.name)
+            Text(user.DOB)
+            Text(user.SSN)
+            Divider()
+            Text(user.street1)
+            Text(user.street2)
+            Text(user.city)
+            Text(user.state)
+            Text(user.postalCode)
         }
+        .onAppear()
+        {
+            user.getContact()
+        }
+        .padding(.top)
         Spacer()
         AccountHomeButton()
     }
