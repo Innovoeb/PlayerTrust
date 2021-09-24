@@ -52,21 +52,32 @@ struct AccountHome: View
                 }
                 .onTapGesture
                 {
-                    window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet())
+                    window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(User()))
                     window?.makeKeyAndVisible()
                 }
             }
             
             Spacer()
-            LogoutButton()
+            VStack (spacing: 20)
+            {
+                LogoutButton()
+                Button("Test Image Upload")
+                {
+                    window?.rootViewController = UIHostingController(rootView: UploadDocuments().environmentObject(User()))
+                    window?.makeKeyAndVisible()
+                }
+            }
+            
             Spacer()
         }
         .onAppear()
         {
-            print("is a user logged in?: \(user.userLoggedIn)")
+            //print("is a user logged in?: \(user.userLoggedIn)")
             user.getCurrentUserDocument()
         }
     }
+    
+    
 
 }
 

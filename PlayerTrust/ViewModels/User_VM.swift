@@ -18,6 +18,7 @@ class User: ObservableObject
     @Published var accountStatus = ""
     @Published var contactID = ""
     @Published var accountID = ""
+    @Published var accountIsOpen = false
     
     // PlayerAuth Detail View
     @Published var name = ""
@@ -111,6 +112,11 @@ class User: ObservableObject
                 DispatchQueue.main.async
                 {
                     self.accountStatus = respData.accountData.attributes.status
+                    
+                    if (self.accountStatus == "opened")
+                    {
+                        self.accountIsOpen = true
+                    }
                 }
             }
             catch
@@ -182,5 +188,20 @@ class User: ObservableObject
                 task.resume()
             }
         }
+    }
+    
+    func openAccount()
+    {
+        var request = URLRequest(url: URL(string: "https://sandbox.primetrust.com/v2/accounts/\(self.accountID)/sandbox/open")!,timeoutInterval: Double.infinity)
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "POST"
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+          guard let data = data else {
+            print(String(describing: error))
+            return
+          }
+        }
+        task.resume()
     }
 }

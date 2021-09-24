@@ -9,11 +9,21 @@ import SwiftUI
 
 struct PlayerTrustWallet: View
 {
+    @EnvironmentObject var user: User
+    
+    
     var body: some View
     {
         VStack
         {
-            Text("This is the PlayerTrust Wallet view")
+            if (user.accountIsOpen == true)
+            {
+                Text("This is the PlayerTrust Wallet view")
+            }
+        }
+        .onAppear()
+        {
+            user.getCurrentUserDocument()
         }
         Spacer()
         AccountHomeButton()
