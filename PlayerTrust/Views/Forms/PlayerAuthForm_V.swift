@@ -42,7 +42,7 @@ struct PlayerAuthForm: View
                 Section
                 {
                     TextField("Name", text: $name)
-                    TextField("DOB example: 1980-06-15", text: $DOB)
+                    TextField("DOB YYYY-MM-DD", text: $DOB)
                     SecureField("SSN", text: $SSN)
                 }
                 
@@ -55,32 +55,21 @@ struct PlayerAuthForm: View
                     TextField("State", text: $state)
                     TextField("Postal Code", text: $postalCode)
                 }
+            }
+            
+            Divider()
+            Button("Submit")
+            {
+                createAccountWithContact()
                 
-                
-                HStack
-                {
-                    Spacer()
-                    Button("Submit")
-                    {
-                        createAccountWithContact()
-                        
-                        // after form submit send to image upload view
-                        window?.rootViewController = UIHostingController(rootView: UploadDocuments())
-                        window?.makeKeyAndVisible()
-                    }
-                    Spacer()
-                }
+                // after form submit send to image upload view
+                window?.rootViewController = UIHostingController(rootView: UploadDocuments().environmentObject(User()))
+                    window?.makeKeyAndVisible()
                 
             }
+            Spacer()
+            AccountHomeButton() // MARK: TODO: Make an Alert Here!
         }
-        
-    }
-    
-    func test()
-    {
-        print(name)
-        print(DOB)
-        print(state)
     }
     
     func createAccountWithContact()
@@ -119,15 +108,18 @@ struct PlayerAuthForm: View
                 //print(String(data: data, encoding: .utf8)!)
                 print("Response: \(response!)")
                 let respData = try JSONDecoder().decode(CreateAccountResponse.self, from: data)
-                user.accountStatus = respData.data.attributes.status // grab account status
-                user.accountID = respData.data.id // grab the account's ID
-                user.contactID = respData.data.relationships.contacts.data[0].id // grab the contact's ID
                 
-                // update user document in firestore with newly created account and contact ID from PT
-                let db = Firestore.firestore()
-                let users = db.collection("users").document(Auth.auth().currentUser?.uid ?? "")
-                
-                users.updateData(["contactID": user.contactID, "accountID": user.accountID])
+                DispatchQueue.main.async
+                {
+                    user.accountStatus = respData.data.attributes.status // grab account status
+                    user.accountID = respData.data.id // grab the account's ID
+                    user.contactID = respData.data.relationships.contacts.data[0].id // grab the contact's ID
+                    
+                    // update user document in firestore with newly created account and contact ID from PT
+                    let db = Firestore.firestore()
+                    let users = db.collection("users").document(Auth.auth().currentUser?.uid ?? "")
+                    users.updateData(["contactID": user.contactID, "accountID": user.accountID])
+                }
             }
             catch
             {

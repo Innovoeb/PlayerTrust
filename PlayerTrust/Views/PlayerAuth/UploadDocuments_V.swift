@@ -65,29 +65,40 @@ struct UploadDocuments: View
         {
             ImagePicker(image: self.$image, isShown: self.$showImagePicker, sourceType: self.sourceType)
         }
-        .onTapGesture
-        {
-            print("contactID: \(user.contactID)")
-            if (image != nil)
-            {
-                print(image!)
-            }
-        }
         .onAppear()
         {
-            user.getCurrentUserDocument()
+            //user.getCurrentUserDocument()
         }
     }
     
-    // MARK: Smoke and Mirrors
+    // MARK: Smoke and Mirrors!
     func postImage()
     {
+        user.imageWasUploaded()
+        
         // create a timer for 2mins that uses PT sandbox endpoint that opens the account
-        Timer.scheduledTimer(withTimeInterval: 45.0, repeats: false)
-        { timer in
+//        let timer1 = Timer.scheduledTimer(withTimeInterval: 35.0, repeats: false)
+//        { timer in
+//
+//        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 35)
+        {
             user.openAccount()
-            user.accountIsOpen = true
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 40)
+        {
+            user.getKYPStatus()
+        }
+        
+        
+        
+//        // illusion! (fake webhook?)
+//        let timer2 = Timer.scheduledTimer(withTimeInterval: 40.0, repeats: false)
+//        { timer in
+//            user.getKYPStatus()
+//        }
+//
         
         // navigate end user to account home
         let window = UIApplication.shared.windows.first

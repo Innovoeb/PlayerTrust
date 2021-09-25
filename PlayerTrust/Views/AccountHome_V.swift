@@ -22,6 +22,7 @@ struct AccountHome: View
         {
             Spacer()
             Text("Hello \(user.userUsername)")
+                .font(.title)
             Spacer()
     
             VStack (spacing: 20)
@@ -42,7 +43,14 @@ struct AccountHome: View
                                 window?.makeKeyAndVisible()
                             }
                         }
-                    Text("(\(user.accountStatus))")
+                    if (user.accountStatus == "")
+                    {
+                        Text("(Begin)")
+                    }
+                    else
+                    {
+                        Text("(\(user.accountStatus))")
+                    }
                 }
                 Divider()
                 VStack
@@ -61,24 +69,14 @@ struct AccountHome: View
             VStack (spacing: 20)
             {
                 LogoutButton()
-                Button("Test Image Upload")
-                {
-                    window?.rootViewController = UIHostingController(rootView: UploadDocuments().environmentObject(User()))
-                    window?.makeKeyAndVisible()
-                }
             }
-            
             Spacer()
         }
         .onAppear()
         {
-            //print("is a user logged in?: \(user.userLoggedIn)")
             user.getCurrentUserDocument()
         }
     }
-    
-    
-
 }
 
 //struct AccountHome_V_Previews: PreviewProvider {

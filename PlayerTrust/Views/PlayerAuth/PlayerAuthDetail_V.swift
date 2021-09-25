@@ -11,8 +11,10 @@ struct PlayerAuthDetail: View
 {
     @EnvironmentObject var user: User
     
+    
     var body: some View
     {
+        Spacer()
         VStack (alignment: .center, spacing: 10)
         {
             Text(user.name)
@@ -21,8 +23,7 @@ struct PlayerAuthDetail: View
             Divider()
             Text(user.street1)
             Text(user.street2)
-            Text(user.city)
-            Text(user.state)
+            Text("\(user.city), \(user.state)")
             Text(user.postalCode)
         }
         .onAppear()
@@ -30,6 +31,19 @@ struct PlayerAuthDetail: View
             user.getContact()
         }
         .padding(.top)
+        
+        
+        
+        if (user.uploadedDocuments == false)
+        {
+            Spacer()
+            Button("Upload Driver's License/Identification")
+            {
+                let window = UIApplication.shared.windows.first
+                window?.rootViewController = UIHostingController(rootView: UploadDocuments().environmentObject(User()))
+                window?.makeKeyAndVisible()
+            }
+        }
         Spacer()
         AccountHomeButton()
     }
