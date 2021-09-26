@@ -118,7 +118,7 @@ struct LoginSignupForm: View
             let db = Firestore.firestore()
             let path = db.collection("users").document(currentUser.uid)
             
-            path.setData(["username" : cleansedUsername, "userID": currentUser.uid, "email" : currentUser.email ?? "", "contactID" : "", "accountID" : "", "uploaded-documents" : false, "walletsCreated" : false, "bitcoinATM" : "", "bitcoinWallet" : "", "etherATM" : "", "xrpATM" : "", "xrpWallet" : ""])
+            path.setData(["username" : cleansedUsername, "userID": currentUser.uid, "email" : currentUser.email ?? "", "contactID" : "", "accountID" : "", "uploaded-documents" : false, "walletsCreated" : false, "bitcoinATM" : "", "bitcoinWallet" : "", "etherATM" : "", "etherWallet" : "", "xrpATM" : "", "xrpWallet" : ""])
             {
                 error in
                 

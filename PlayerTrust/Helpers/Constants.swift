@@ -15,4 +15,6 @@ struct Constants
     
     static var JWT = "eyJhbGciOiJIUzI1NiJ9.eyJhdXRoX3NlY3JldCI6ImIxZmY5YTMxLWNkZWEtNDM4NC05MWM4LWRmOGZkMjBjMGMxNSIsInVzZXJfZ3JvdXBzIjpbXSwibm93IjoxNjMyMDEyMjA3LCJleHAiOjE3NjQ3MjAwMDB9.iAU5p39G_gZtBODzKnGSi5XwiJ6LgaoJgzgXI8KDvXc"
     
+    static var logoID = "9281fc3e-33ca-488f-858c-e74e00deabaf"
+    
 }

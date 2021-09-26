@@ -75,37 +75,17 @@ struct UploadDocuments: View
     func postImage()
     {
         user.imageWasUploaded()
-        
-        // create a timer for 2mins that uses PT sandbox endpoint that opens the account
-//        let timer1 = Timer.scheduledTimer(withTimeInterval: 35.0, repeats: false)
-//        { timer in
-//
-//        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 35)
-        {
+        user.getCurrentUserDocument()
+        Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { Timer in
+            
             user.openAccount()
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 40)
-        {
-            user.getKYPStatus()
-        }
-        
-        
-        
-//        // illusion! (fake webhook?)
-//        let timer2 = Timer.scheduledTimer(withTimeInterval: 40.0, repeats: false)
-//        { timer in
-//            user.getKYPStatus()
-//        }
-//
         
         // navigate end user to account home
         let window = UIApplication.shared.windows.first
         window?.rootViewController = UIHostingController(rootView: AccountHome().environmentObject(User()))
         window?.makeKeyAndVisible()
     }
-    
 }
 
 struct UploadDocuments_V_Previews: PreviewProvider {

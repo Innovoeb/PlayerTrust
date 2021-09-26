@@ -21,12 +21,13 @@ class User: ObservableObject
     @Published var accountIsOpen = false
     @Published var uploadedDocuments = false
     @Published var walletsCreated = false
-    //@Published var bitcoinATM = ""
     @Published var bitcoinWallet = ""
-    //@Published var etherATM = ""
     @Published var etherWallet = ""
-    //@Published var xrpATM = ""
     @Published var xrpWallet = ""
+    
+    // User.openAccount()
+    var kycDocCheckID = ""
+    var cipCheckID = ""
     
     // PlayerAuth Detail View
     @Published var name = ""
@@ -43,6 +44,12 @@ class User: ObservableObject
     @Published var etherID = "e63b0367-c47b-49be-987a-f14036b230cd"
     @Published var xrpID = "a1703b84-bbba-435d-a1d2-f8f73e9d01b6"
     
+    // PlayerTrust Wallet
+    @Published var cointype = ""
+    @Published var amount = ""
+    @Published var outgoingWallet = ""
+    @Published var assetTransferID = ""
+    
     init()
     {
         userLoggedIn = Auth.auth().currentUser == nil ? false : true // check if a user is logged in
@@ -52,7 +59,7 @@ class User: ObservableObject
         }
     }
     
-    // MARK: Get Firestore Document Related to Current User
+    // get firestore document related to current user
     func getCurrentUserDocument()
     {
         let db = Firestore.firestore()
@@ -117,7 +124,7 @@ class User: ObservableObject
         }
     }
     
-    // MARK: Grab the Associated PT Account's Status
+    // grab the associated PT account's status
     func getKYPStatus()
     {
         // use the accountID to make a GET to PT API and return the associated account's status
@@ -159,7 +166,7 @@ class User: ObservableObject
         task.resume()
     }
     
-    // MARK: Grab the Associated PT Contact's Info
+    // grab the associated PT contact's info
     func getContact()
     {
         
@@ -222,10 +229,143 @@ class User: ObservableObject
         }
     }
     
-    // MARK: Sandbox API Endpoint Call To Open PT Account
+    // smoke and mirrors method that opens PT account and clears/verifys cip and kyc doc checks
     func openAccount()
     {
+        self.sandboxOpen()
+        print("init...")
+        print("contactID: \(self.contactID), accountID: \(self.accountID)")
+        
+        // fire off methods within a few seconds of eachother
+        Timer.scheduledTimer(withTimeInterval: 30.0, repeats: false)
+        { timer in
+            
+            self.createKYCDocCheck()
+            print("1st timer fired!")
+        }
+        Timer.scheduledTimer(withTimeInterval: 60.0, repeats: false)
+        { timer in
+            
+            self.approveKYCDocCheck()
+            print("2nd timer fired!")
+            print("kyc check: \(self.kycDocCheckID)")
+        }
+        Timer.scheduledTimer(withTimeInterval: 90.0, repeats: false)
+        { timer in
+            
+            self.getCIPChecks()
+            print("3rd timer fired!")
+           
+            
+        }
+        Timer.scheduledTimer(withTimeInterval: 120.0, repeats: false)
+        { timer in
+            
+            self.approveCIPCheck()
+            print("4th timer fired!")
+            print("cip check: \(self.cipCheckID)")
+        }
+    }
+    
+    func sandboxOpen()
+    {
         var request = URLRequest(url: URL(string: "https://sandbox.primetrust.com/v2/accounts/\(self.accountID)/sandbox/open")!,timeoutInterval: Double.infinity)
+                request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+                request.httpMethod = "POST"
+                
+                let task = URLSession.shared.dataTask(with: request)
+                {
+                    (data, response, error) in
+                    
+                    if error != nil
+                    {
+                        print(String(describing: error))
+                    }
+//                  guard let data = data else {
+//
+//                    return
+//                  }
+                }
+                task.resume()
+    }
+    
+    // create PT kyc doc check associated with contactID
+    func createKYCDocCheck()
+    {
+        var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)kyc-document-checks")!,timeoutInterval: Double.infinity)
+        
+        let parameters = """
+        {
+          "data": {
+            "type": "kyc-document-checks",
+            "attributes": {
+              "contact-id": "\(self.contactID)",
+              "uploaded-document-id": "\(Constants.logoID)",
+              "kyc-document-type": "drivers_license",
+              "kyc-document-country": "US"
+            }
+          }
+        }
+        """
+        let postData = parameters.data(using: .utf8)
+        request.httpBody = postData
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+          guard let data = data else {
+            print(String(describing: error))
+            return
+          }
+            do
+            {
+                let resp = try JSONDecoder().decode(KYCDocCheckResponse.self, from: data)
+                DispatchQueue.main.async
+                {
+                    self.kycDocCheckID = resp.data.id
+                }
+            }
+            catch
+            {
+                print(error)
+            }
+        }
+        task.resume()
+    }
+    
+    func getCIPChecks()
+    {
+        var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)cip-checks?contact.id=\(self.contactID)")!,timeoutInterval: Double.infinity)
+        
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+          guard let data = data else {
+            print(String(describing: error))
+            return
+          }
+            do
+            {
+                let resp = try JSONDecoder().decode(GetCIPCheck.self, from: data)
+                DispatchQueue.main.async
+                {
+                    self.cipCheckID = resp.data[0].id
+                }
+            }
+            catch
+            {
+                print(error)
+            }
+        }
+        task.resume()
+    }
+    
+    func approveKYCDocCheck()
+    {
+        var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)kyc-document-checks/\(self.kycDocCheckID)/sandbox/verify")!,timeoutInterval: Double.infinity)
         request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
         request.httpMethod = "POST"
         
@@ -238,7 +378,22 @@ class User: ObservableObject
         task.resume()
     }
     
-    // MARK: Change Bool in User's Firestore Document to True After an Image is Uploaded
+    func approveCIPCheck()
+    {
+        var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)cip-checks/\(self.cipCheckID)/sandbox/approve")!,timeoutInterval: Double.infinity)
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "POST"
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+          guard let data = data else {
+            print(String(describing: error))
+            return
+          }
+        }
+        task.resume()
+    }
+    
+    // change bool in user's firestore document to true after an image is uploaded
     func imageWasUploaded()
     {
         let db = Firestore.firestore()
@@ -321,7 +476,7 @@ class User: ObservableObject
         }
         """
         
-        let etherPostData = bitcoinParams.data(using: .utf8)
+        let etherPostData = etherParams.data(using: .utf8)
         request.httpBody = etherPostData
         
         task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -399,5 +554,81 @@ class User: ObservableObject
             let users = db.collection("users").document(Auth.auth().currentUser!.uid)
             users.updateData(["walletsCreated" : true])
         }
+    }
+    
+    
+    func coinWithdraw()
+    {
+        self.createAssetDisbursement()
+        
+    }
+    
+    func createAssetDisbursement()
+    {
+        var coinID = ""
+        
+        if (self.cointype == "bitcoin")
+        {
+            coinID = self.bitcoinID
+        }
+        else if (self.cointype == "ethereum")
+        {
+            coinID = self.etherID
+        }
+        else if (self.cointype == "xrp")
+        {
+            coinID = self.xrpID
+        }
+        
+        print("----------coinID: \(coinID)")
+        
+        var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)asset-disbursements?include=asset-transfer")!,timeoutInterval: Double.infinity)
+        
+        let parameters = """
+            {
+              "data": {
+                "type": "asset-disbursements",
+                "attributes": {
+                  "account-id": "\(self.accountID)",
+                  "unit-count": "\(self.amount)",
+                  "asset-transfer-method": {
+                      "asset-id": "\(coinID)",
+                      "asset-transfer-type": "bitcoin",
+                      "contact-id": "\(self.contactID)",
+                      "account-id": "\(self.accountID)",
+                      "transfer-direction": "outgoing",
+                      "wallet-address": "\(self.outgoingWallet)"
+                    }
+                }
+              }
+            }
+        """
+        let postData = parameters.data(using: .utf8)
+        request.httpBody = postData
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        
+        let task = URLSession.shared.dataTask(with: request) {
+            (data, response, error) in
+          
+            guard let data = data else {
+            print(String(describing: error))
+            return
+          }
+            do
+            {
+                let resp = try JSONDecoder().decode(CreateAssetDisbursement.self, from: data)
+                DispatchQueue.main.async
+                {
+                    self.assetTransferID = resp.included[0].id
+                }
+            }
+            catch
+            {
+                print(error)
+            }
+        }
+        task.resume()
     }
 }

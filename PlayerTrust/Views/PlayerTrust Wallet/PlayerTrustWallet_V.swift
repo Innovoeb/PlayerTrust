@@ -51,7 +51,8 @@ struct PlayerTrustWallet: View
                 }
                 Button("Withdraw")
                 {
-                    // send to withdraw crypto form view
+                    window?.rootViewController = UIHostingController(rootView: WithdrawForm().environmentObject(User()))
+                    window?.makeKeyAndVisible()
                 }
             }
             Spacer()

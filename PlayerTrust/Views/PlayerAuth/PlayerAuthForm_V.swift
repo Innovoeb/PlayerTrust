@@ -106,7 +106,7 @@ struct PlayerAuthForm: View
             do
             {
                 //print(String(data: data, encoding: .utf8)!)
-                print("Response: \(response!)")
+                //print("Response: \(response!)")
                 let respData = try JSONDecoder().decode(CreateAccountResponse.self, from: data)
                 
                 DispatchQueue.main.async
