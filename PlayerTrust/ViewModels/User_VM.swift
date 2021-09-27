@@ -48,7 +48,13 @@ class User: ObservableObject
     @Published var cointype = ""
     @Published var amount = ""
     @Published var outgoingWallet = ""
-    @Published var assetTransferID = ""
+    var assetTransferID = ""
+    var disbursementEmailLink = ""
+    var disbursementEmailID = ""
+    //@Published var assetTotals = [AssetBalance]()
+    @Published var bitcoinTotal = 0.0
+    @Published var etherTotal = 0.0
+    @Published var xrpTotal = 0.0
     
     init()
     {
@@ -255,8 +261,6 @@ class User: ObservableObject
             
             self.getCIPChecks()
             print("3rd timer fired!")
-           
-            
         }
         Timer.scheduledTimer(withTimeInterval: 120.0, repeats: false)
         { timer in
@@ -281,10 +285,6 @@ class User: ObservableObject
                     {
                         print(String(describing: error))
                     }
-//                  guard let data = data else {
-//
-//                    return
-//                  }
                 }
                 task.resume()
     }
@@ -384,11 +384,15 @@ class User: ObservableObject
         request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
         request.httpMethod = "POST"
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-          guard let data = data else {
-            print(String(describing: error))
-            return
-          }
+        let task = URLSession.shared.dataTask(with: request)
+        {
+            (data, response, error) in
+            
+            if error != nil
+            {
+                print(String(describing: error))
+                return
+            }
         }
         task.resume()
     }
@@ -560,7 +564,27 @@ class User: ObservableObject
     func coinWithdraw()
     {
         self.createAssetDisbursement()
+        print("init...")
+        print("asset disbursement created")
         
+        Timer.scheduledTimer(withTimeInterval: 30.0, repeats: false)
+        { timer in
+            
+            self.getDisbursementEmail()
+            print("1st timer fired!")
+        }
+        Timer.scheduledTimer(withTimeInterval: 60.0, repeats: false)
+        { timer in
+            
+            self.approveDisbursementEmail()
+            print("2nd timer fired!")
+        }
+        Timer.scheduledTimer(withTimeInterval: 90.0, repeats: false)
+        { timer in
+            
+            self.settleAssetTransfer()
+            print("3rd timer fired!")
+        }
     }
     
     func createAssetDisbursement()
@@ -593,7 +617,7 @@ class User: ObservableObject
                   "unit-count": "\(self.amount)",
                   "asset-transfer-method": {
                       "asset-id": "\(coinID)",
-                      "asset-transfer-type": "bitcoin",
+                      "asset-transfer-type": "\(self.cointype)",
                       "contact-id": "\(self.contactID)",
                       "account-id": "\(self.accountID)",
                       "transfer-direction": "outgoing",
@@ -622,6 +646,117 @@ class User: ObservableObject
                 DispatchQueue.main.async
                 {
                     self.assetTransferID = resp.included[0].id
+                    self.disbursementEmailLink = resp.data.relationships.disbursementAuthorization.links.related
+                }
+            }
+            catch
+            {
+                print(error)
+            }
+        }
+        task.resume()
+    }
+    
+    func getDisbursementEmail()
+    {
+        var request = URLRequest(url: URL(string: "https://sandbox.primetrust.com\(self.disbursementEmailLink)")!,timeoutInterval: Double.infinity)
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "GET"
+        
+        let task = URLSession.shared.dataTask(with: request) {
+            (data, response, error) in
+          
+            guard let data = data else {
+            print(String(describing: error))
+            return
+          }
+            do
+            {
+                let resp = try JSONDecoder().decode(GetDisbursementEmail.self, from: data)
+                DispatchQueue.main.async
+                {
+                    self.disbursementEmailID = resp.data.id
+                }
+            }
+            catch
+            {
+                print(error)
+            }
+        }
+        task.resume()
+    }
+    
+    func approveDisbursementEmail()
+    {
+        var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)disbursement-authorizations/\(self.disbursementEmailID)/sandbox/verify-owner")!,timeoutInterval: Double.infinity)
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "POST"
+        
+        let task = URLSession.shared.dataTask(with: request)
+        {
+            (data, response, error) in
+            
+            if error != nil
+            {
+                print(String(describing: error))
+            }
+        }
+        task.resume()
+    }
+    
+    func settleAssetTransfer()
+    {
+        var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)asset-transfers/\(self.assetTransferID)/sandbox/settle")!,timeoutInterval: Double.infinity)
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "POST"
+        
+        let task = URLSession.shared.dataTask(with: request)
+        {
+            (data, response, error) in
+            
+            if error != nil
+            {
+                print(String(describing: error))
+            }
+        }
+        task.resume()
+    }
+    
+    func getAssetBalance()
+    {
+        var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)account-asset-totals?account.id=\(self.accountID)")!)
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "GET"
+        
+        let task = URLSession.shared.dataTask(with: request)
+        {  (data, response, error) in
+            
+            guard let data = data, error == nil else
+            {
+            print(String(describing: error))
+            return
+            }
+            do
+            {
+                //print(String(data: data, encoding: .utf8)!)
+                let respData = try JSONDecoder().decode(AssetBalance.self, from: data)
+                DispatchQueue.main.async
+                {
+                    for i in 0..<respData.data.count
+                    {
+                        if (respData.data[i].attributes.name == "bitcoin")
+                        {
+                            self.bitcoinTotal += respData.data[i].attributes.disbursable
+                        }
+                        if (respData.data[i].attributes.name == "ether")
+                        {
+                            self.etherTotal += respData.data[i].attributes.disbursable
+                        }
+                        if (respData.data[i].attributes.name == "xrp")
+                        {
+                            self.xrpTotal += respData.data[i].attributes.disbursable
+                        }
+                    }
                 }
             }
             catch

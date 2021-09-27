@@ -17,26 +17,31 @@ struct WithdrawForm: View
     
     var body: some View
     {
+        let window = UIApplication.shared.windows.first
+        
         VStack (spacing: 15)
         {
-            Spacer()
-            Menu ("Type of Coin to Withdraw")
+            VStack
             {
-                Button("Bitcoin")
+                Spacer()
+                Menu ("Type of Coin to Withdraw")
                 {
-                    user.cointype = "bitcoin"
+                    Button("Bitcoin")
+                    {
+                        user.cointype = "bitcoin"
+                    }
+                    Button("Ether")
+                    {
+                        user.cointype = "ethereum"
+                    }
+                    Button("XRP")
+                    {
+                        user.cointype = "xrp"
+                    }
                 }
-                Button("Ether")
-                {
-                    user.cointype = "ethereum"
-                }
-                Button("XRP")
-                {
-                    user.cointype = "xrp"
-                }
+                Divider()
+                Spacer()
             }
-            Divider()
-            Spacer()
             
             if (user.cointype == "bitcoin")
             {
@@ -58,19 +63,22 @@ struct WithdrawForm: View
             {
                 TextField("Amount", text: $user.amount)
                 TextField("Wallet Address", text: $user.outgoingWallet)
-                
-                Button("Submit")
-                {
-                    print(user.outgoingWallet)
-                    print(user.cointype)
-                    print(user.amount)
-                }
             }
+            Divider()
+            Button("Submit")
+            {
+                user.coinWithdraw()
+                
+                window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(User()))
+                    window?.makeKeyAndVisible()
+            }
+            
+            Spacer()
+            AccountHomeButton()
         }
         .navigationTitle("Withdraw Coins")
         
-        Spacer()
-        AccountHomeButton()
+        
         
         
         

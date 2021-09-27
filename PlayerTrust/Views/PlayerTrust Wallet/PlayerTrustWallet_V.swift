@@ -15,21 +15,36 @@ struct PlayerTrustWallet: View
     
     var body: some View
     {
-        VStack
+        VStack (spacing: 15)
         {
             Spacer()
-            VStack (spacing: 25)
+            VStack (spacing: 5)
             {
                 if (user.walletsCreated == true)
                 {
-                    // show PlayerTrust Wallet Balance
-                    
+                    Text("\(user.bitcoinTotal) BTC")
+                    Text("\(user.etherTotal) ETH")
+                    Text("\(user.xrpTotal) XRP")
                 }
                 else
                 {
                     Text("Press the Deposit button to add tokens into your PlayerTrust wallet")
                 }
+            }
+            .onAppear()
+            {
+                user.getCurrentUserDocument()
                 
+                Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false)
+                { timer in
+                    
+                    user.getAssetBalance()
+                }
+            }
+            .border(Color.black, width: 200.0)
+            Divider()
+            VStack (spacing: 25)
+            {
                 // static buttons; always showing whether the end user has made a deposit before or not
                 Button("Deposit")
                 {
@@ -55,19 +70,15 @@ struct PlayerTrustWallet: View
                     window?.makeKeyAndVisible()
                 }
             }
+            
             Spacer()
         }
+        .padding(.horizontal)
         .onAppear()
         {
             //user.getCurrentUserDocument()
         }
         Spacer()
         AccountHomeButton()
-    }
-}
-
-struct PlayerTrustWallet_V_Previews: PreviewProvider {
-    static var previews: some View {
-        PlayerTrustWallet()
     }
 }
