@@ -3,10 +3,12 @@
 
 ## a cryptocurrency/fintech iOS prototype application
 
+***
+
 ## Made With...
-![Swift-Logo](Images/Swift-Logo.png)
+![Swift-Logo](Images/rsz_swift-logo.png)
 ![SwiftUI-Logo](Images/swiftUI-logo.jpeg)
 ![FirebaseAuth-Logo](Images/firebaseAuth.png)
-![Firestore-Logo](Images/firebase-logo.png)
+![Firestore-Logo](Images/cloudFirestore-logo.png)
 ![PrimetTrust-Logo](Images/primetrust.png)
 
