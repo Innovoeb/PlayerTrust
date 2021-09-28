@@ -9,6 +9,6 @@
 ![Swift-Logo](Images/rsz_swift-logo.png)
 ![SwiftUI-Logo](Images/rsz_swiftui-logo.jpg)
 ![FirebaseAuth-Logo](Images/rsz_firebaseauth.png)
-![Firestore-Logo](Images/cloudFirestore-logo.png)
-![PrimetTrust-Logo](Images/primetrust.png)
+![Firestore-Logo](Images/rsz_cloudfirestore-logo.png)
+![PrimetTrust-Logo](Images/rsz_primetrust.png)
 
