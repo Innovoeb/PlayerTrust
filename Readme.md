@@ -7,8 +7,8 @@
 
 ## Made With...
 ![Swift-Logo](Images/rsz_swift-logo.png)
-![SwiftUI-Logo](Images/swiftUI-logo.jpeg)
-![FirebaseAuth-Logo](Images/firebaseAuth.png)
+![SwiftUI-Logo](Images/rsz_swiftui-logo.jpg)
+![FirebaseAuth-Logo](Images/rsz_firebaseauth.png)
 ![Firestore-Logo](Images/cloudFirestore-logo.png)
 ![PrimetTrust-Logo](Images/primetrust.png)
 
