@@ -11,12 +11,9 @@ struct WithdrawForm: View
 {
     @EnvironmentObject var user: User
     
-    
-    
-    
-    
     var body: some View
     {
+        Logo()
         let window = UIApplication.shared.windows.first
         
         VStack (spacing: 15)
@@ -61,61 +58,41 @@ struct WithdrawForm: View
             
             Form
             {
-                TextField("Amount", text: $user.amount)
-                TextField("Wallet Address", text: $user.outgoingWallet)
-            }
-            Divider()
-            Button("Submit")
-            {
-                user.coinWithdraw()
+                Section
+                {
+                    TextField("Amount", text: $user.amount)
+                    TextField("Wallet Address", text: $user.outgoingWallet)
+                }
                 
-                window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(User()))
-                    window?.makeKeyAndVisible()
+                HStack
+                {
+                    Spacer()
+                    Button("Submit")
+                    {
+                        user.coinWithdraw()
+                        window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(User()))
+                            window?.makeKeyAndVisible()
+                    }
+                    .foregroundColor(Color.black)
+                    Spacer()
+                }
+            }
+            .background(Color(red: 57 / 255, green: 102 / 255, blue: 85 / 255))
+            .onAppear()
+            {
+                UITableView.appearance().backgroundColor = .clear
             }
             
+            
             Spacer()
-            AccountHomeButton()
+            // MARK: TODO: Make an Alert Here!
+            HStack (spacing: 65)
+            {
+                AccountHomeButton()
+                LogoutButton()
+            }
         }
         .navigationTitle("Withdraw Coins")
-        
-        
-        
-        
-        
-        
-//        NavigationView
-//        {
-//            VStack
-//            {
-//               Text("Foobar")
-//                    .toolbar {
-//                        ToolbarItem(placement: ToolbarItemPlacement.automatic) {
-//
-//                            Menu {
-//                               Button("Bitcoin")
-//                                {
-//
-//                                }
-//                                Button("Ether")
-//                                 {
-//
-//                                 }
-//                                Button("XRP")
-//                                 {
-//
-//                                 }
-//                            } label: {
-//                                Label(
-//                                    title: { Text("Currency Type") },
-//                                    icon: { Image(systemName: "plus") }
-//                                )
-//                            }
-//
-//                        }
-//                    }
-//            }
-//
-//        }
     }
 }
 

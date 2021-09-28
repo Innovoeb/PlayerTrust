@@ -31,11 +31,11 @@ struct PlayerAuthForm: View
     
     var body: some View
     {
+        Text("PlayerAuth™")
+            .font(.largeTitle)
+        ExDivider()
         VStack
         {
-            Spacer()
-            Text("PlayerAuth™")
-                .font(.largeTitle)
             Form
             {
                 // PII
@@ -55,20 +55,36 @@ struct PlayerAuthForm: View
                     TextField("State", text: $state)
                     TextField("Postal Code", text: $postalCode)
                 }
+                
+                HStack
+                {
+                    Spacer()
+                    Button("Submit")
+                    {
+                        createAccountWithContact()
+                        
+                        // after form submit send to image upload view
+                        window?.rootViewController = UIHostingController(rootView: UploadDocuments().environmentObject(User()))
+                            window?.makeKeyAndVisible()
+                    }
+                    .foregroundColor(Color.black)
+                    Spacer()
+                }
+            }
+            .background(Color(red: 57 / 255, green: 102 / 255, blue: 85 / 255))
+            .onAppear()
+            {
+                UITableView.appearance().backgroundColor = .clear
             }
             
-            Divider()
-            Button("Submit")
-            {
-                createAccountWithContact()
-                
-                // after form submit send to image upload view
-                window?.rootViewController = UIHostingController(rootView: UploadDocuments().environmentObject(User()))
-                    window?.makeKeyAndVisible()
-                
-            }
+            
             Spacer()
-            AccountHomeButton() // MARK: TODO: Make an Alert Here!
+            // MARK: TODO: Make an Alert Here!
+            HStack (spacing: 65)
+            {
+                AccountHomeButton()
+                LogoutButton()
+            }
         }
     }
     

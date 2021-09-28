@@ -16,18 +16,31 @@ struct LogoutButton: View
     
     var body: some View
     {
-        HStack
+        VStack
         {
-            if (user.userLoggedIn == true)
-            {
-                Button("Logout")
-                {
-                    // run method that logs user out of account
-                    print("logging out of account...")
-                    logout()
-                }
-            }
+            Image(systemName: "square.and.pencil").renderingMode(.template)
+            Text("Logout")
         }
+        .onTapGesture
+        {
+            logout()
+        }
+        
+        
+        
+//        HStack
+//        {
+//            if (user.userLoggedIn == true)
+//            {
+//                Button("Logout")
+//                {
+//                    // run method that logs user out of account
+//                    print("logging out of account...")
+//                    logout()
+//                }
+//                .foregroundColor(Color.black)
+//            }
+//        }
     }
     
     func logout()
@@ -38,19 +51,6 @@ struct LogoutButton: View
             user.userLoggedIn = false
             window?.rootViewController = UIHostingController(rootView: RootView().environmentObject(User()))
             window?.makeKeyAndVisible()
-            
-//            // if sign in successful
-//            if error == nil
-//            {
-//                print("Logging into account...")
-//                window?.rootViewController = UIHostingController(rootView: AccountHome())
-//                window?.makeKeyAndVisible()
-//            }
-//            else
-//            {
-//                // if there's an issue with logging in
-//                errorMessage = error!.localizedDescription
-//            }
         }
     }
 }

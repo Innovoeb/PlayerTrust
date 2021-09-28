@@ -17,7 +17,7 @@ struct AccountHome: View
     
     var body: some View
     {
-        
+        Logo()
         VStack
         {
             Spacer()
@@ -70,7 +70,6 @@ struct AccountHome: View
             {
                 LogoutButton()
             }
-            Spacer()
         }
         .onAppear()
         {

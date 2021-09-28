@@ -14,9 +14,12 @@ struct PlayerAuthDetail: View
     
     var body: some View
     {
-        Spacer()
+        Text("PlayerAuth™")
+            .font(.largeTitle)
+        ExDivider()
         VStack (alignment: .center, spacing: 10)
         {
+            //Spacer()
             Text(user.name)
             Text(user.DOB)
             Text(user.SSN)
@@ -44,8 +47,13 @@ struct PlayerAuthDetail: View
                 window?.makeKeyAndVisible()
             }
         }
+        
         Spacer()
-        AccountHomeButton()
+        HStack (spacing: 65)
+        {
+            AccountHomeButton()
+            LogoutButton()
+        }
     }
 }
 

@@ -15,7 +15,8 @@ struct PlayerTrustWallet: View
     
     var body: some View
     {
-        VStack (spacing: 15)
+        Logo()
+        VStack (spacing: 30)
         {
             Spacer()
             VStack (spacing: 5)
@@ -43,7 +44,7 @@ struct PlayerTrustWallet: View
             }
             .border(Color.black, width: 200.0)
             Divider()
-            VStack (spacing: 25)
+            HStack (spacing: 65)
             {
                 // static buttons; always showing whether the end user has made a deposit before or not
                 Button("Deposit")
@@ -64,11 +65,13 @@ struct PlayerTrustWallet: View
                         window?.makeKeyAndVisible()
                     }
                 }
+                .foregroundColor(Color.black)
                 Button("Withdraw")
                 {
                     window?.rootViewController = UIHostingController(rootView: WithdrawForm().environmentObject(User()))
                     window?.makeKeyAndVisible()
                 }
+                .foregroundColor(Color.black)
             }
             
             Spacer()
@@ -78,7 +81,12 @@ struct PlayerTrustWallet: View
         {
             //user.getCurrentUserDocument()
         }
+        
         Spacer()
-        AccountHomeButton()
+        HStack (spacing: 65)
+        {
+            AccountHomeButton()
+            LogoutButton()
+        }
     }
 }

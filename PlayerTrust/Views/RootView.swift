@@ -14,8 +14,10 @@ struct RootView: View
     
     var body: some View
     {
+        
         if (user.userLoggedIn == false)
         {
+            Logo()
             TabView
             {
                 Home()
@@ -23,7 +25,7 @@ struct RootView: View
                     {
                         VStack
                         {
-                            Image(systemName: "house.fill")
+                            Image(systemName: "house.fill").renderingMode(.template)
                             Text("Home")
                         }
                     }
@@ -33,12 +35,13 @@ struct RootView: View
                     {
                         VStack
                         {
-                            Image(systemName: "square.and.pencil")
+                            Image(systemName: "square.and.pencil").renderingMode(.template)
                             Text("Login")
                         }
                     }
 
             }
+            .accentColor(.black)
             .onAppear()
             {
                 print("is a user logged in?: \(user.userLoggedIn)")
