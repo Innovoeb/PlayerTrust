@@ -1,3 +1,3 @@
-### PlayerTrust
+# PlayerTrust
 
-![PlayerTrust-Logo](/Users/innovoeb/Documents/SwiftUI/PlayerTrust/Images/logo_size_invert.jpg)
+![PlayerTrust-Logo](Images/white_logo_color_background.jpg)
