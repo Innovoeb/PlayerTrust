@@ -13,9 +13,9 @@ struct BitcoinWallet: View
     
     var body: some View
     {
-        VStack
+        VStack (spacing: 20)
         {
-            Spacer()
+           Spacer()
             Text("Bitcoin Deposit Address")
                 .font(.title)
             Spacer()

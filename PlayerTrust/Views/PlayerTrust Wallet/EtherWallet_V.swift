@@ -13,7 +13,7 @@ struct EtherWallet: View
     
     var body: some View
     {
-        VStack
+        VStack (spacing: 20)
         {
             Spacer()
             Text("Ether Deposit Address")

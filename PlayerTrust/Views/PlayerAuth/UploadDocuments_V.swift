@@ -29,7 +29,12 @@ struct UploadDocuments: View
                     .resizable()
                     .frame(width: 300, height: 300)
                 
-                Button("Choose Picture")
+                HStack (spacing: 10)
+                {
+                    Image(systemName: "plus")
+                    Text("Select Picture")
+                }
+                .onTapGesture
                 {
                     self.showSheet = true
                 }
@@ -51,15 +56,25 @@ struct UploadDocuments: View
                 }
                 
                 Spacer()
-                Button("Submit")
+                HStack (spacing: 10)
+                {
+                    Image(systemName: "chevron.right.2")
+                    Text("Submit")
+                }
+                .onTapGesture
                 {
                     postImage()
                 }
                 
                 Spacer()
-                AccountHomeButton()
+                // MARK: TODO: Make an Alert Here!
+                HStack (spacing: 65)
+                {
+                    AccountHomeButton()
+                    LogoutButton()
+                }
             }
-            .navigationBarTitle("Upload ID")
+            .navigationBarTitle("Upload Identification")
         }
         .sheet(isPresented: $showImagePicker)
         {

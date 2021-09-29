@@ -24,48 +24,85 @@ struct AccountHome: View
             Text("Hello \(user.userUsername)")
                 .font(.title)
             Spacer()
-    
+            
+            
             VStack (spacing: 20)
             {
-                VStack (spacing: 5)
+                // PlayerAuth
+                VStack
                 {
                     Text("PlayerAuth™")
-                        .onTapGesture
-                        {
-                            if (user.contactID == "")
-                            {
-                                window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
-                                window?.makeKeyAndVisible()
-                            }
-                            else
-                            {
-                                window?.rootViewController = UIHostingController(rootView: PlayerAuthDetail().environmentObject(User()))
-                                window?.makeKeyAndVisible()
-                            }
-                        }
                     if (user.accountStatus == "")
                     {
-                        Text("(Begin)")
+                        Text("(Begin Application)")
                     }
                     else
                     {
-                        Text("(\(user.accountStatus))")
+                        if (user.accountIsOpen == false)
+                        {
+                            Text("(Pending)")
+                                .foregroundColor(Color.red)
+                        }
+                        else
+                        {
+                            Text("(Approved)")
+                                .foregroundColor( Color(red: 57 / 255, green: 102 / 255, blue: 85 / 255) )
+                        }
                     }
-                }
-                Divider()
-                VStack
-                {
-                    Image(systemName:"bag.circle.fill")
-                    Text("PlayerTrust Wallet™")
                 }
                 .onTapGesture
                 {
-                    window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(User()))
-                    window?.makeKeyAndVisible()
+                    if (user.contactID == "")
+                    {
+                        window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
+                        window?.makeKeyAndVisible()
+                    }
+                    else
+                    {
+                        window?.rootViewController = UIHostingController(rootView: PlayerAuthDetail().environmentObject(User()))
+                        window?.makeKeyAndVisible()
+                    }
+                }
+                Divider()
+                // PlayerTrust Wallet
+                VStack
+                {
+                    if (user.contactID == "" || user.accountIsOpen == false)
+                    {
+                        Text("PlayerTrust Wallet™")
+                            .foregroundColor(Color.gray)
+                        
+                    }
+                    else
+                    {
+                        Text("PlayerTrust Wallet™")
+                    }
+                    
+                    if (user.contactID == "" || user.accountIsOpen == false)
+                    {
+                        Image(systemName:"bag.circle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .opacity(0.2)
+                    }
+                    else
+                    {
+                        Image(systemName:"bag.circle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                    }
+                }
+                .onTapGesture
+                {
+                    if (user.accountIsOpen == true)
+                    {
+                        window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(User()))
+                        window?.makeKeyAndVisible()
+                    }
                 }
             }
-            
             Spacer()
+            // PlayerTrust Wallet VStack
             VStack (spacing: 20)
             {
                 LogoutButton()
@@ -77,6 +114,51 @@ struct AccountHome: View
         }
     }
 }
+                
+                
+                
+//                VStack (spacing: 5)
+//                {
+//                    Text("PlayerAuth™")
+//                        .onTapGesture
+//                        {
+//                            if (user.contactID == "")
+//                            {
+//                                window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
+//                                window?.makeKeyAndVisible()
+//                            }
+//                            else
+//                            {
+//                                window?.rootViewController = UIHostingController(rootView: PlayerAuthDetail().environmentObject(User()))
+//                                window?.makeKeyAndVisible()
+//                            }
+//                        }
+//                    if (user.accountStatus == "")
+//                    {
+//                        Text("(Begin PlayerAuth™ Application)")
+//                    }
+//                    else
+//                    {
+//                        Text("(\(user.accountStatus))")
+//                    }
+//                }
+//                Divider()
+//                VStack
+//                {
+//                    Text("PlayerTrust Wallet™")
+//                    Image(systemName:"bag.circle.fill")
+//                        .resizable()
+//                        .frame(width: 50, height: 50)
+//                }
+//                .onTapGesture
+//                {
+//                    window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(User()))
+//                    window?.makeKeyAndVisible()
+//                }
+        
+            
+            
+
 
 //struct AccountHome_V_Previews: PreviewProvider {
 //    static var previews: some View {

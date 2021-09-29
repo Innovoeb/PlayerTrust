@@ -47,12 +47,20 @@ struct PlayerTrustWallet: View
             HStack (spacing: 65)
             {
                 // static buttons; always showing whether the end user has made a deposit before or not
-                Button("Deposit")
+                
+                HStack (spacing: 5)
+                {
+                    Image(systemName: "plus.circle")
+                    Text("Deposit")
+                }
+                .onTapGesture
                 {
                     if (user.walletsCreated == false)
                     {
                         // run a method that sends a POST to create asset transfer methods for all 3 tokens
                         user.createATM()
+                        
+                        // MARK: TODO, progress bar to allow for the creation of wallet addresses
                         
                         // navigate to Deposit Address tab view
                         window?.rootViewController = UIHostingController(rootView: DepositAddresses().environmentObject(User()))
@@ -66,7 +74,12 @@ struct PlayerTrustWallet: View
                     }
                 }
                 .foregroundColor(Color.black)
-                Button("Withdraw")
+                HStack (spacing: 5)
+                {
+                    Image(systemName: "minus.circle")
+                    Text("Withdraw")
+                }
+                .onTapGesture
                 {
                     window?.rootViewController = UIHostingController(rootView: WithdrawForm().environmentObject(User()))
                     window?.makeKeyAndVisible()

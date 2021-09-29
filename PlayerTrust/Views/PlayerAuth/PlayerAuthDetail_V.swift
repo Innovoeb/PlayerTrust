@@ -40,7 +40,14 @@ struct PlayerAuthDetail: View
         if (user.uploadedDocuments == false)
         {
             Spacer()
-            Button("Upload Driver's License/Identification")
+            VStack
+            {
+                Image(systemName:"camera.on.rectangle")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                Text("Upload Driver's License/Identification")
+            }
+            .onTapGesture
             {
                 let window = UIApplication.shared.windows.first
                 window?.rootViewController = UIHostingController(rootView: UploadDocuments().environmentObject(User()))

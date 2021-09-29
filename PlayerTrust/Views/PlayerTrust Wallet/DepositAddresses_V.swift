@@ -11,12 +11,10 @@ struct DepositAddresses: View
 {
     @EnvironmentObject var user: User
     
-    
     var body: some View
     {
         VStack
         {
-            
             TabView
             {
                 BitcoinWallet().environmentObject(User())
@@ -49,9 +47,15 @@ struct DepositAddresses: View
                         }
                     }
             }
-            
             Divider()
-            AccountHomeButton()
+            
+            Spacer()
+            HStack (spacing: 65)
+            {
+                AccountHomeButton()
+                PlayerTrustWalletButton()
+                LogoutButton()
+            }
         }
     }
 }

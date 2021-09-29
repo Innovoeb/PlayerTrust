@@ -21,21 +21,28 @@ struct WithdrawForm: View
             VStack
             {
                 Spacer()
-                Menu ("Type of Coin to Withdraw")
+                HStack (spacing: 5)
                 {
-                    Button("Bitcoin")
+                    Image(systemName: "exclamationmark.circle")
+                    Menu ("Type of Coin to Withdraw")
                     {
-                        user.cointype = "bitcoin"
+                        Button("Bitcoin")
+                        {
+                            user.cointype = "bitcoin"
+                        }
+                        Button("Ether")
+                        {
+                            user.cointype = "ethereum"
+                        }
+                        Button("XRP")
+                        {
+                            user.cointype = "xrp"
+                        }
                     }
-                    Button("Ether")
-                    {
-                        user.cointype = "ethereum"
-                    }
-                    Button("XRP")
-                    {
-                        user.cointype = "xrp"
-                    }
+                    .foregroundColor(Color.black)
                 }
+                
+                
                 Divider()
                 Spacer()
             }
@@ -89,6 +96,7 @@ struct WithdrawForm: View
             HStack (spacing: 65)
             {
                 AccountHomeButton()
+                PlayerTrustWalletButton()
                 LogoutButton()
             }
         }

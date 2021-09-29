@@ -13,7 +13,7 @@ struct XRPWallet: View
     
     var body: some View
     {
-        VStack
+        VStack (spacing: 20)
         {
             Spacer()
             Text("XRP Deposit Address")
