@@ -11,6 +11,7 @@ struct PlayerTrustWallet: View
 {
     @EnvironmentObject var user: User
     let window = UIApplication.shared.windows.first
+    @State private var isLoading = false
     
     
     var body: some View
@@ -21,24 +22,34 @@ struct PlayerTrustWallet: View
             Spacer()
             VStack (spacing: 5)
             {
-                if (user.walletsCreated == true)
+                if (user.assetBalanceIsLoading == true)
                 {
-                    Text("\(user.bitcoinTotal) BTC")
-                    Text("\(user.etherTotal) ETH")
-                    Text("\(user.xrpTotal) XRP")
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .scaleEffect(3)
                 }
                 else
                 {
-                    Text("Press the Deposit button to add tokens into your PlayerTrust wallet")
+                    if (user.walletsCreated == true)
+                    {
+                        Text("\(user.bitcoinTotal) BTC")
+                        Text("\(user.etherTotal) ETH")
+                        Text("\(user.xrpTotal) XRP")
+                    }
+                    else
+                    {
+                        Text("Press the Deposit button to add tokens into your PlayerTrust wallet")
+                    }
                 }
             }
             .onAppear()
             {
                 user.getCurrentUserDocument()
+                user.assetBalanceIsLoading = true
+                //startFakeNetworkCall()
                 
                 Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false)
                 { timer in
-                    
                     user.getAssetBalance()
                 }
             }
@@ -100,6 +111,15 @@ struct PlayerTrustWallet: View
         {
             AccountHomeButton()
             LogoutButton()
+        }
+    }
+    
+    func startFakeNetworkCall()
+    {
+        isLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3)
+        {
+            isLoading = false
         }
     }
 }

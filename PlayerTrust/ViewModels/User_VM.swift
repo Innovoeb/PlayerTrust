@@ -56,6 +56,12 @@ class User: ObservableObject
     @Published var etherTotal = 0.0
     @Published var xrpTotal = 0.0
     
+    // progress views
+    @Published var assetBalanceIsLoading = false
+    @Published var accountHomeIsLoading = false
+    @Published var playerauthDetailIsLoading = false
+    @Published var walletAddressesAreLoading = false
+    
     init()
     {
         userLoggedIn = Auth.auth().currentUser == nil ? false : true // check if a user is logged in
@@ -154,6 +160,7 @@ class User: ObservableObject
                 //print("GetKYC - accountID: \(self.accountID)")
                 let respData = try JSONDecoder().decode(AccountModel.self, from: data)
                 
+                
                 DispatchQueue.main.async
                 {
                     self.accountStatus = respData.accountData.attributes.status
@@ -213,6 +220,7 @@ class User: ObservableObject
                         
                         DispatchQueue.main.async
                         {
+                            self.playerauthDetailIsLoading = false
                             self.name = respData.data.attributes.name
                             self.DOB = respData.data.attributes.DOB
                             self.SSN = respData.data.attributes.SSN
@@ -742,6 +750,7 @@ class User: ObservableObject
                 let respData = try JSONDecoder().decode(AssetBalance.self, from: data)
                 DispatchQueue.main.async
                 {
+                    self.assetBalanceIsLoading = false
                     for i in 0..<respData.data.count
                     {
                         if (respData.data[i].attributes.name == "bitcoin")
@@ -766,4 +775,6 @@ class User: ObservableObject
         }
         task.resume()
     }
+    
+    
 }

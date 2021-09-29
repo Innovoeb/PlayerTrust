@@ -21,7 +21,16 @@ struct BitcoinWallet: View
             Spacer()
             Text("Deposit Bitcoin into the address listed below. When PlayerTrust receives the tokens your balance will be updated.")
             Divider()
-            Text(user.bitcoinWallet)
+            if (user.bitcoinWallet == "")
+            {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .scaleEffect(3)
+            }
+            else
+            {
+                Text(user.bitcoinWallet)
+            }
             Spacer()
         }
         .padding(.horizontal)

@@ -19,41 +19,48 @@ struct PlayerAuthDetail: View
         ExDivider()
         VStack (alignment: .center, spacing: 10)
         {
-            //Spacer()
-            Text(user.name)
-            Text(user.DOB)
-            Text(user.SSN)
-            Divider()
-            Text(user.street1)
-            Text(user.street2)
-            Text("\(user.city), \(user.state)")
-            Text(user.postalCode)
+            if (user.playerauthDetailIsLoading == true)
+            {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .scaleEffect(3)
+            }
+            else
+            {
+                Text(user.name)
+                Text(user.DOB)
+                Text(user.SSN)
+                Divider()
+                Text(user.street1)
+                Text(user.street2)
+                Text("\(user.city), \(user.state)")
+                Text(user.postalCode)
+                
+                if (user.uploadedDocuments == false)
+                {
+                    Spacer()
+                    VStack
+                    {
+                        Image(systemName:"camera.on.rectangle")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                        Text("Upload Driver's License/Identification")
+                    }
+                    .onTapGesture
+                    {
+                        let window = UIApplication.shared.windows.first
+                        window?.rootViewController = UIHostingController(rootView: UploadDocuments().environmentObject(User()))
+                        window?.makeKeyAndVisible()
+                    }
+                }
+            }
         }
         .onAppear()
         {
             user.getContact()
+            user.playerauthDetailIsLoading = true
         }
         .padding(.top)
-        
-        
-        
-        if (user.uploadedDocuments == false)
-        {
-            Spacer()
-            VStack
-            {
-                Image(systemName:"camera.on.rectangle")
-                    .resizable()
-                    .frame(width: 50, height: 50)
-                Text("Upload Driver's License/Identification")
-            }
-            .onTapGesture
-            {
-                let window = UIApplication.shared.windows.first
-                window?.rootViewController = UIHostingController(rootView: UploadDocuments().environmentObject(User()))
-                window?.makeKeyAndVisible()
-            }
-        }
         
         Spacer()
         HStack (spacing: 65)
