@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct XRPWallet: View
 {
@@ -25,6 +26,10 @@ struct XRPWallet: View
             Spacer()
         }
         .padding(.horizontal)
+        .onAppear()
+        {
+            user.getCurrentUserDocument()
+        }
     }
 }
 

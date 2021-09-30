@@ -9,21 +9,42 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import Combine
 
 class User: ObservableObject
 {
     @Published var userID = ""
     @Published var userUsername = ""
+    @Published var email = ""
     @Published var userLoggedIn:Bool
-    @Published var accountStatus = ""
+    var accountStatus = ""
+    {
+        willSet
+        {
+            print("account status changed!")
+            objectWillChange.send()
+        }
+    }
     @Published var contactID = ""
     @Published var accountID = ""
     @Published var accountIsOpen = false
     @Published var uploadedDocuments = false
     @Published var walletsCreated = false
-    @Published var bitcoinWallet = ""
-    @Published var etherWallet = ""
-    @Published var xrpWallet = ""
+    @Published var bitcoinWallet = "" {
+        willSet {
+            objectWillChange.send()
+        }
+    }
+    @Published var etherWallet = "" {
+        willSet {
+            objectWillChange.send()
+        }
+    }
+    @Published var xrpWallet = "" {
+        willSet {
+            objectWillChange.send()
+        }
+    }
     
     // User.openAccount()
     var kycDocCheckID = ""
@@ -52,9 +73,21 @@ class User: ObservableObject
     var disbursementEmailLink = ""
     var disbursementEmailID = ""
     //@Published var assetTotals = [AssetBalance]()
-    @Published var bitcoinTotal = 0.0
-    @Published var etherTotal = 0.0
-    @Published var xrpTotal = 0.0
+    @Published var bitcoinTotal = 0.0 {
+        willSet {
+            objectWillChange.send()
+        }
+    }
+    @Published var etherTotal = 0.0 {
+        willSet {
+            objectWillChange.send()
+        }
+    }
+    @Published var xrpTotal = 0.0 {
+        willSet {
+            objectWillChange.send()
+        }
+    }
     
     // progress views
     @Published var assetBalanceIsLoading = false
@@ -96,6 +129,7 @@ class User: ObservableObject
                 DispatchQueue.main.async
                 {
                     self.userUsername = data!["username"] as! String
+                    self.email = data!["email"] as! String
                     self.userID = data!["userID"] as! String
                     self.uploadedDocuments = data!["uploaded-documents"] as! Bool
                     self.walletsCreated = data!["walletsCreated"] as! Bool
@@ -295,6 +329,7 @@ class User: ObservableObject
                     }
                 }
                 task.resume()
+        objectWillChange.send()
     }
     
     // create PT kyc doc check associated with contactID
@@ -419,6 +454,29 @@ class User: ObservableObject
     // Create ATMs Associated with User
     func createATM()
     {
+        let db = Firestore.firestore()
+        if Auth.auth().currentUser != nil
+        {
+            let users = db.collection("users").document(Auth.auth().currentUser!.uid)
+            users.updateData(["walletsCreated" : true])
+        }
+        
+        createBitcoinWallet()
+        //objectWillChange.send()
+        
+        Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { timer in
+            self.getCurrentUserDocument()
+            print("bitcoinWallet: \(self.bitcoinWallet)")
+            self.createEtherWallet()
+        }
+        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { timer in
+            self.createXRPWallet()
+        }
+
+    }
+    
+    func createBitcoinWallet()
+    {
         var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)asset-transfer-methods")!,timeoutInterval: Double.infinity)
         request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -446,7 +504,7 @@ class User: ObservableObject
         let bitcoinPostData = bitcoinParams.data(using: .utf8)
         request.httpBody = bitcoinPostData
         
-        var task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
           guard let data = data else {
             print(String(describing: error))
             return
@@ -456,6 +514,7 @@ class User: ObservableObject
                 let respData = try JSONDecoder().decode(ATMResponse.self, from: data)
                 DispatchQueue.main.async
                 {
+                    self.walletAddressesAreLoading = false
                     self.bitcoinWallet = respData.data.attributes.walletAddress
                     if Auth.auth().currentUser != nil
                     {
@@ -470,6 +529,17 @@ class User: ObservableObject
             }
         }
         task.resume()
+    }
+    
+    func createEtherWallet()
+    {
+        var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)asset-transfer-methods")!,timeoutInterval: Double.infinity)
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        let db = Firestore.firestore()
+        
+        
         
         // Ether
         let etherParams = """
@@ -491,7 +561,7 @@ class User: ObservableObject
         let etherPostData = etherParams.data(using: .utf8)
         request.httpBody = etherPostData
         
-        task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
           guard let data = data else {
             print(String(describing: error))
             return
@@ -515,6 +585,17 @@ class User: ObservableObject
             }
         }
         task.resume()
+    }
+    
+    func createXRPWallet()
+    {
+        var request = URLRequest(url: URL(string: "\(Constants.primetrustURL)asset-transfer-methods")!,timeoutInterval: Double.infinity)
+        request.setValue("Bearer \(Constants.JWT)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+        let db = Firestore.firestore()
+        
+        
         
         // XRP
         let xrpParams = """
@@ -536,7 +617,7 @@ class User: ObservableObject
         let xrpPostData = xrpParams.data(using: .utf8)
         request.httpBody = xrpPostData
         
-        task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
           guard let data = data else {
             print(String(describing: error))
             return
@@ -560,12 +641,6 @@ class User: ObservableObject
             }
         }
         task.resume()
-        
-        if Auth.auth().currentUser != nil
-        {
-            let users = db.collection("users").document(Auth.auth().currentUser!.uid)
-            users.updateData(["walletsCreated" : true])
-        }
     }
     
     

@@ -18,7 +18,7 @@ struct AccountHome: View
     var body: some View
     {
         Logo()
-        VStack
+        VStack (spacing: 20)
         {
             Spacer()
             if (user.userUsername != "")
@@ -28,92 +28,95 @@ struct AccountHome: View
             }
             Spacer()
             
-            VStack (spacing: 20)
+            if (user.accountHomeIsLoading == true)
             {
-                if (user.accountHomeIsLoading == true)
+                Spacer()
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .scaleEffect(3)
+                
+            }
+            else
+            {
+                // PlayerAuth
+                VStack
                 {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .scaleEffect(3)
-                }
-                else
-                {
-                    // PlayerAuth
-                    VStack
+                    Text("PlayerAuth™")
+                    if (user.accountStatus == "")
                     {
-                        Text("PlayerAuth™")
-                        if (user.accountStatus == "")
-                        {
-                            Text("(Begin Application)")
-                        }
-                        else
-                        {
-                            if (user.accountIsOpen == false)
-                            {
-                                Text("(Pending)")
-                                    .foregroundColor(Color.red)
-                            }
-                            else
-                            {
-                                Text("(Approved)")
-                                    .foregroundColor( Color(red: 57 / 255, green: 102 / 255, blue: 85 / 255) )
-                            }
-                        }
+                        Text("(Begin Application)")
+                        
                     }
-                    .onTapGesture
+                    else
                     {
-                        if (user.contactID == "")
+                        if (user.accountIsOpen == false)
                         {
-                            window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
-                            window?.makeKeyAndVisible()
-                        }
-                        else
-                        {
-                            window?.rootViewController = UIHostingController(rootView: PlayerAuthDetail().environmentObject(User()))
-                            window?.makeKeyAndVisible()
-                        }
-                    }
-                    Divider()
-                    // PlayerTrust Wallet
-                    VStack
-                    {
-                        if (user.contactID == "" || user.accountIsOpen == false)
-                        {
-                            Text("PlayerTrust Wallet™")
-                                .foregroundColor(Color.gray)
+                            Text("(Pending)")
+                                .foregroundColor(Color.red)
                             
                         }
                         else
                         {
-                            Text("PlayerTrust Wallet™")
-                        }
-                        
-                        if (user.contactID == "" || user.accountIsOpen == false)
-                        {
-                            Image(systemName:"bag.circle.fill")
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                                .opacity(0.2)
-                        }
-                        else
-                        {
-                            Image(systemName:"bag.circle.fill")
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                        }
-                    }
-                    .onTapGesture
-                    {
-                        if (user.accountIsOpen == true)
-                        {
-                            window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(User()))
-                            window?.makeKeyAndVisible()
+                            Text("(Approved)")
+                                .foregroundColor( Color(red: 57 / 255, green: 102 / 255, blue: 85 / 255) )
+                            
                         }
                     }
                 }
-                
-                
+                .onTapGesture
+                {
+                    if (user.contactID == "")
+                    {
+                        window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
+                        window?.makeKeyAndVisible()
+                        
+                    }
+                    else
+                    {
+                        window?.rootViewController = UIHostingController(rootView: PlayerAuthDetail().environmentObject(User()))
+                        window?.makeKeyAndVisible()
+                        
+                    }
+                }
+                Divider()
+                // PlayerTrust Wallet
+                VStack
+                {
+                    if (user.contactID == "" || user.accountIsOpen == false)
+                    {
+                        Text("PlayerTrust Wallet™")
+                            .foregroundColor(Color.gray)
+                            
+                    }
+                    else
+                    {
+                        Text("PlayerTrust Wallet™")
+                    }
+                        
+                    if (user.contactID == "" || user.accountIsOpen == false)
+                    {
+                        Image(systemName:"bag.circle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .opacity(0.2)
+                    }
+                    else
+                    {
+                        Image(systemName:"bag.circle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                    }
+                }
+                .onTapGesture
+                {
+                    if (user.accountIsOpen == true)
+                    {
+                        window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(User()))
+                        window?.makeKeyAndVisible()
+                    }
+                }
             }
+                
             Spacer()
             // PlayerTrust Wallet VStack
             VStack (spacing: 20)

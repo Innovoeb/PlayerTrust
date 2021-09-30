@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct EtherWallet: View
 {
@@ -25,6 +26,10 @@ struct EtherWallet: View
             Spacer()
         }
         .padding(.horizontal)
+        .onAppear()
+        {
+            user.getCurrentUserDocument()
+        }
     }
 }
 

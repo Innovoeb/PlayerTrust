@@ -13,6 +13,7 @@ struct DepositAddresses: View
     
     var body: some View
     {
+        Logo()
         VStack
         {
             TabView

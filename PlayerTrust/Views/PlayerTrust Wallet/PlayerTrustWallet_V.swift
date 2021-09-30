@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct PlayerTrustWallet: View
 {
@@ -17,9 +18,12 @@ struct PlayerTrustWallet: View
     var body: some View
     {
         Logo()
-        VStack (spacing: 30)
+        VStack (alignment: .center, spacing: 30)
         {
+            Text("PlayerTrust Wallet™")
+                .font(.largeTitle)
             Spacer()
+            //Spacer()
             VStack (spacing: 5)
             {
                 if (user.assetBalanceIsLoading == true)
@@ -30,11 +34,12 @@ struct PlayerTrustWallet: View
                 }
                 else
                 {
+                   
                     if (user.walletsCreated == true)
                     {
-                        Text("\(user.bitcoinTotal) BTC")
-                        Text("\(user.etherTotal) ETH")
-                        Text("\(user.xrpTotal) XRP")
+                        Text("\(String(format: "%.2f", user.bitcoinTotal) ) BTC")
+                        Text("\(String(format: "%.2f", user.etherTotal) ) ETH")
+                        Text("\(String(format: "%.2f", user.xrpTotal) ) XRP")
                     }
                     else
                     {
@@ -46,7 +51,6 @@ struct PlayerTrustWallet: View
             {
                 user.getCurrentUserDocument()
                 user.assetBalanceIsLoading = true
-                //startFakeNetworkCall()
                 
                 Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false)
                 { timer in
@@ -69,7 +73,9 @@ struct PlayerTrustWallet: View
                     if (user.walletsCreated == false)
                     {
                         // run a method that sends a POST to create asset transfer methods for all 3 tokens
+                        user.walletAddressesAreLoading = true
                         user.createATM()
+                        
                         
                         // MARK: TODO, progress bar to allow for the creation of wallet addresses
                         
@@ -114,12 +120,9 @@ struct PlayerTrustWallet: View
         }
     }
     
-    func startFakeNetworkCall()
-    {
-        isLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3)
-        {
-            isLoading = false
-        }
-    }
+    
 }
+
+
+
+

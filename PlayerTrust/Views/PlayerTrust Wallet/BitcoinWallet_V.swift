@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct BitcoinWallet: View
 {
@@ -13,6 +14,7 @@ struct BitcoinWallet: View
     
     var body: some View
     {
+   
         VStack (spacing: 20)
         {
            Spacer()
@@ -21,17 +23,13 @@ struct BitcoinWallet: View
             Spacer()
             Text("Deposit Bitcoin into the address listed below. When PlayerTrust receives the tokens your balance will be updated.")
             Divider()
-            if (user.bitcoinWallet == "")
-            {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .scaleEffect(3)
-            }
-            else
-            {
-                Text(user.bitcoinWallet)
-            }
+            
+            Text(user.bitcoinWallet)
             Spacer()
+        }
+        .onAppear()
+        {
+            user.getCurrentUserDocument()
         }
         .padding(.horizontal)
     }

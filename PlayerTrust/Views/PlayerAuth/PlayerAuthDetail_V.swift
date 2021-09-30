@@ -14,11 +14,12 @@ struct PlayerAuthDetail: View
     
     var body: some View
     {
-        Text("PlayerAuth™")
-            .font(.largeTitle)
-        ExDivider()
+        Logo()
         VStack (alignment: .center, spacing: 10)
         {
+            Text("PlayerAuth™")
+                .font(.largeTitle)
+            Spacer()
             if (user.playerauthDetailIsLoading == true)
             {
                 ProgressView()
@@ -27,18 +28,22 @@ struct PlayerAuthDetail: View
             }
             else
             {
-                Text(user.name)
-                Text(user.DOB)
-                Text(user.SSN)
-                Divider()
-                Text(user.street1)
-                Text(user.street2)
-                Text("\(user.city), \(user.state)")
-                Text(user.postalCode)
-                
+                VStack (spacing: 8.5)
+                {
+                    Text(user.name)
+                    Text(user.email)
+                    Text(user.DOB)
+                    Text(user.SSN.masked)
+                    Divider()
+                    Text(user.street1)
+                    Text(user.street2)
+                    Text("\(user.city), \(user.state)")
+                    Text(user.postalCode)
+                }
+               
+                Spacer()
                 if (user.uploadedDocuments == false)
                 {
-                    Spacer()
                     VStack
                     {
                         Image(systemName:"camera.on.rectangle")
@@ -53,6 +58,7 @@ struct PlayerAuthDetail: View
                         window?.makeKeyAndVisible()
                     }
                 }
+                Spacer()
             }
         }
         .onAppear()
@@ -68,6 +74,16 @@ struct PlayerAuthDetail: View
             AccountHomeButton()
             LogoutButton()
         }
+    }
+    
+}
+
+// extention that when added to the SSN will only show last 4 digits
+extension StringProtocol
+{
+    var masked: String
+    {
+        return String(repeating: "*", count: Swift.max(0, count-4)) + suffix(4)
     }
 }
 

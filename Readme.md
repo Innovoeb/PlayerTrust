@@ -5,7 +5,13 @@
 
 ***
 
-## Made With...
+KYC Verification (PlayerAuth™)              |  Deposit/Withdraw Crypto (PlayerTrust Wallet™)
+:-------------------------:|:-------------------------:
+![](Images/account-home.png)  |  ![](Images/withdraw.png) 
+![](Images/application.png) | ![](Images/wallet.png)
+
+
+## **Made With...**
 ![Swift-Logo](Images/rsz_swift-logo.png)
 ![SwiftUI-Logo](Images/rsz_swiftui-logo.jpg)
 ![FirebaseAuth-Logo](Images/rsz_firebaseauth.png)
