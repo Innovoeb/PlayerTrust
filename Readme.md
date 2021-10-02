@@ -45,5 +45,10 @@ PlayerTrust Wallet™\
 
 ***
 
+## **Product Management Tools**
+
+Trello Board: https://trello.com/b/lzoW2Axo/playertrust \
+UI Hierarchy: https://whimsical.com/playertrust-swiftui-view-hierarchy-LD6TK7TpV8cA8faE1ReaNS
+
 
 
