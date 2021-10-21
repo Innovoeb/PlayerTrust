@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseAuth
 
+// super/parent view
 struct RootView: View
 {
     @EnvironmentObject var user: User

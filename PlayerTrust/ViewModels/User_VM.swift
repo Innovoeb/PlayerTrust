@@ -13,6 +13,7 @@ import Combine
 
 class User: ObservableObject
 {
+    // end user props
     @Published var userID = ""
     @Published var userUsername = ""
     @Published var email = ""
@@ -23,6 +24,8 @@ class User: ObservableObject
     @Published var accountIsOpen = false
     @Published var uploadedDocuments = false
     @Published var walletsCreated = false
+    
+    // end user's wallet IDs within PrimeTrust API
     @Published var bitcoinWallet = ""
     @Published var etherWallet = ""
     @Published var xrpWallet = ""
@@ -41,23 +44,25 @@ class User: ObservableObject
     @Published var street1 = ""
     @Published var street2 = ""
     
-    // PT Assets
+    // PrimeTrust API Asset IDs
     @Published var bitcoinID = "798debbc-ec84-43ea-8096-13e2ebcf4749"
     @Published var etherID = "e63b0367-c47b-49be-987a-f14036b230cd"
     @Published var xrpID = "a1703b84-bbba-435d-a1d2-f8f73e9d01b6"
     
-    // PlayerTrust Wallet
+    // PlayerTrust Wallet View
     @Published var cointype = ""
     @Published var amount = ""
     @Published var outgoingWallet = ""
-    var assetTransferID = ""
-    var disbursementEmailLink = ""
-    var disbursementEmailID = ""
     @Published var bitcoinTotal = 0.0
     @Published var etherTotal = 0.0
     @Published var xrpTotal = 0.0
     
-    // progress views
+    // props needed to manually approve asset transactions via PrimeTrust API
+    var assetTransferID = ""
+    var disbursementEmailLink = ""
+    var disbursementEmailID = ""
+    
+    // progress views bools
     @Published var assetBalanceIsLoading = false
     @Published var accountHomeIsLoading = false
     @Published var playerauthDetailIsLoading = false
