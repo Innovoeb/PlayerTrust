@@ -17,34 +17,15 @@ class User: ObservableObject
     @Published var userUsername = ""
     @Published var email = ""
     @Published var userLoggedIn:Bool
-    var accountStatus = ""
-    {
-        willSet
-        {
-            print("account status changed!")
-            objectWillChange.send()
-        }
-    }
+    @Published var accountStatus = ""
     @Published var contactID = ""
     @Published var accountID = ""
     @Published var accountIsOpen = false
     @Published var uploadedDocuments = false
     @Published var walletsCreated = false
-    @Published var bitcoinWallet = "" {
-        willSet {
-            objectWillChange.send()
-        }
-    }
-    @Published var etherWallet = "" {
-        willSet {
-            objectWillChange.send()
-        }
-    }
-    @Published var xrpWallet = "" {
-        willSet {
-            objectWillChange.send()
-        }
-    }
+    @Published var bitcoinWallet = ""
+    @Published var etherWallet = ""
+    @Published var xrpWallet = ""
     
     // User.openAccount()
     var kycDocCheckID = ""
@@ -72,22 +53,9 @@ class User: ObservableObject
     var assetTransferID = ""
     var disbursementEmailLink = ""
     var disbursementEmailID = ""
-    //@Published var assetTotals = [AssetBalance]()
-    @Published var bitcoinTotal = 0.0 {
-        willSet {
-            objectWillChange.send()
-        }
-    }
-    @Published var etherTotal = 0.0 {
-        willSet {
-            objectWillChange.send()
-        }
-    }
-    @Published var xrpTotal = 0.0 {
-        willSet {
-            objectWillChange.send()
-        }
-    }
+    @Published var bitcoinTotal = 0.0
+    @Published var etherTotal = 0.0
+    @Published var xrpTotal = 0.0
     
     // progress views
     @Published var assetBalanceIsLoading = false

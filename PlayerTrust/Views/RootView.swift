@@ -14,7 +14,6 @@ struct RootView: View
     
     var body: some View
     {
-        
         if (user.userLoggedIn == false)
         {
             Logo()
@@ -54,8 +53,3 @@ struct RootView: View
     }
 }
 
-struct RootView_Previews: PreviewProvider {
-    static var previews: some View {
-        RootView()
-    }
-}

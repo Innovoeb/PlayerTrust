@@ -13,7 +13,7 @@ struct AccountHome: View
     @EnvironmentObject var user: User
     
     let window = UIApplication.shared.windows.first
-    
+
     
     var body: some View
     {
@@ -126,66 +126,17 @@ struct AccountHome: View
         }
         .onAppear()
         {
-            user.accountHomeIsLoading = true
-            initApp()
+            user.accountHomeIsLoading = true // initiate loading spinner
+            initAccountHome()
         }
     }
     
-    func initApp()
+    // stop loading spinner
+    func initAccountHome()
     {
         Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { Timer in
             user.accountHomeIsLoading = false
         }
     }
 }
-                
-                
-                
-//                VStack (spacing: 5)
-//                {
-//                    Text("PlayerAuth™")
-//                        .onTapGesture
-//                        {
-//                            if (user.contactID == "")
-//                            {
-//                                window?.rootViewController = UIHostingController(rootView: PlayerAuthForm().environmentObject(User()))
-//                                window?.makeKeyAndVisible()
-//                            }
-//                            else
-//                            {
-//                                window?.rootViewController = UIHostingController(rootView: PlayerAuthDetail().environmentObject(User()))
-//                                window?.makeKeyAndVisible()
-//                            }
-//                        }
-//                    if (user.accountStatus == "")
-//                    {
-//                        Text("(Begin PlayerAuth™ Application)")
-//                    }
-//                    else
-//                    {
-//                        Text("(\(user.accountStatus))")
-//                    }
-//                }
-//                Divider()
-//                VStack
-//                {
-//                    Text("PlayerTrust Wallet™")
-//                    Image(systemName:"bag.circle.fill")
-//                        .resizable()
-//                        .frame(width: 50, height: 50)
-//                }
-//                .onTapGesture
-//                {
-//                    window?.rootViewController = UIHostingController(rootView: PlayerTrustWallet().environmentObject(User()))
-//                    window?.makeKeyAndVisible()
-//                }
-        
-            
-            
 
-
-//struct AccountHome_V_Previews: PreviewProvider {
-//    static var previews: some View {
-//        AccountHome().environmentObject(User())
-//    }
-//}
