@@ -15,6 +15,7 @@ struct RootView: View
     
     var body: some View
     {
+        
         if (user.userLoggedIn == false)
         {
             Logo()
@@ -29,7 +30,7 @@ struct RootView: View
                             Text("Home")
                         }
                     }
-                
+                    
                 LoginSignupForm().environmentObject(User())
                     .tabItem
                     {
@@ -42,10 +43,6 @@ struct RootView: View
 
             }
             .accentColor(.black)
-            .onAppear()
-            {
-                print("is a user logged in?: \(user.userLoggedIn)")
-            }
         }
         else
         {

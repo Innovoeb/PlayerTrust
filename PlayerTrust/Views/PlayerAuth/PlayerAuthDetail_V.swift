@@ -61,6 +61,7 @@ struct PlayerAuthDetail: View
                 Spacer()
             }
         }
+        .navigationBarHidden(true)
         .onAppear()
         {
             user.getContact()

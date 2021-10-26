@@ -9,19 +9,16 @@ import SwiftUI
 
 struct AccountHomeButton: View
 {
-    let window = UIApplication.shared.windows.first
-    
     var body: some View
     {
-        VStack
+        NavigationLink(destination: AccountHome())
         {
-            Image(systemName: "house.fill")
-            Text("Home")
-        }
-        .onTapGesture
-        {
-            window?.rootViewController = UIHostingController(rootView: AccountHome().environmentObject(User()))
-            window?.makeKeyAndVisible()
+            VStack
+            {
+                Image(systemName: "house.fill")
+                Text("Home")
+            }
+            .accentColor(.black)
         }
     }
 }
