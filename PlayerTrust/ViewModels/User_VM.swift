@@ -96,20 +96,19 @@ class User: ObservableObject
             }
             else if let docSnapshot = docSnapshot
             {
-                //print(docSnapshot.data() ?? "")
+                guard let data = docSnapshot.data() else {return}
                 
-                let data = docSnapshot.data()
                 DispatchQueue.main.async
                 {
-                    self.userUsername = data!["username"] as! String
-                    self.email = data!["email"] as! String
-                    self.userID = data!["userID"] as! String
-                    self.uploadedDocuments = data!["uploaded-documents"] as! Bool
-                    self.walletsCreated = data!["walletsCreated"] as! Bool
-                    if (data!["accountID"] != nil)
+                    self.userUsername = data["username"] as? String ?? ""
+                    self.email = data["email"] as? String ?? ""
+                    self.userID = data["userID"] as? String ?? ""
+                    self.uploadedDocuments = data["uploaded-documents"] as? Bool ?? false
+                    self.walletsCreated = data["walletsCreated"] as? Bool ?? false
+                    if (data["accountID"] != nil)
                     {
-                        self.contactID = data!["contactID"] as! String
-                        self.accountID = data!["accountID"] as! String
+                        self.contactID = data["contactID"] as? String ?? ""
+                        self.accountID = data["accountID"] as? String ?? ""
                         
                         if (self.accountID != "")
                         {
@@ -122,17 +121,17 @@ class User: ObservableObject
                     }
                     
                     // grab wallet IDs
-                    if (data!["bitcoinWallet"] != nil)
+                    if (data["bitcoinWallet"] != nil)
                     {
-                        self.bitcoinWallet = data!["bitcoinWallet"] as! String
+                        self.bitcoinWallet = data["bitcoinWallet"] as? String ?? ""
                     }
-                    if (data!["etherWallet"] != nil)
+                    if (data["etherWallet"] != nil)
                     {
-                        self.etherWallet = data!["etherWallet"] as! String
+                        self.etherWallet = data["etherWallet"] as? String ?? ""
                     }
-                    if (data!["xrpWallet"] != nil)
+                    if (data["xrpWallet"] != nil)
                     {
-                        self.xrpWallet = data!["xrpWallet"] as! String
+                        self.xrpWallet = data["xrpWallet"] as? String ?? ""
                     }
                 }
             }
